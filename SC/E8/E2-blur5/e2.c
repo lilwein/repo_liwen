@@ -1,0 +1,3 @@
+// Scrivere la soluzione qui...
+void blur5(unsigned char* in, unsigned char* out, int w, int h){
+	
