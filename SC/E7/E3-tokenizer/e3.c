@@ -6,45 +6,47 @@
 char **tokenize(const char *str, const char *delim, int *num_tok){
 
 	*num_tok = 0;
-	char* buffer = strcpy(buffer, str);	
-	char* token = strtok(str, delim);
-	while(token != NULL){
-		token = strtok(NULL, delim);
-    		num_tok += 1;
-	}
-	char** pussy =  malloc(sizeof(char*)*(*num_tok));
-	token = strtok(buffer, ", ");
-	pussy[0]= malloc(MAX_LENGHT*sizeof(char));
-	strcpy(pussy[0], token);
-	int i = 0;
-	while(i < (*num_tok)-1){
-		printf("%s\n", pussy[i]);
-		++i;
-		token = strtok(NULL, ", ");
-    		pussy[i]= malloc(MAX_LENGHT*sizeof(char));
-		strcpy(pussy[i], token);
-	}
-}
-/*int main(){
-	char str[] = "Houston, we have a problem";
-	int num_tok = 0;
-	char* buffer = strcpy(buffer, str);	
-	char* token = strtok(str, ", ");
-	while(token != NULL){
-		token = strtok(NULL, ", ");
-    		num_tok += 1;
-	}
-	char** pussy =  malloc(sizeof(char*)*num_tok);
-	token = strtok(buffer, ", ");
-	pussy[0]= malloc(MAX_LENGHT*sizeof(char));
-	strcpy(pussy[0], token);
-	int i = 0;
-	while(i < num_tok-1){
-		printf("%s\n", pussy[i]);
-		++i;
-		token = strtok(NULL, ", ");
-    		pussy[i]= malloc(MAX_LENGHT*sizeof(char));
-		strcpy(pussy[i], token);
-	}
+
+	char* buffer = (char*) malloc(256);
+    buffer = strcpy(buffer, str) ;
+
+    char* buffer2 = (char*) malloc(256);
+    buffer2 = strcpy(buffer2, str) ;	
+
+	char* token = strtok(buffer, delim);
 	
-}*/
+    while(token != NULL){
+		token = strtok(NULL, delim);
+    	*num_tok += 1;
+	}
+
+    char** pussy =  malloc(sizeof(char*)*(*num_tok));
+	
+    token = strtok(buffer2, delim);
+	
+    for(int i=0; i< *num_tok; i++){
+        pussy[i]= (char*) malloc(MAX_LENGHT);
+        strcpy(pussy[i], token);
+        //printf("%s\n", pussy[i]);
+        token = strtok(NULL, delim);
+    }
+	return pussy;
+}
+
+//#define MAIN_E3_C 1
+
+#ifdef MAIN_E3_C
+int main(void){
+	int c;
+
+    const char* str = "Houston, we have a problem";
+    const char* delim = ", ";
+	
+	char** array = tokenize(str,delim,&c);
+
+	for (int i=0; i<c ; i++){
+		printf("%s\n", array[i]);
+	}
+	return 1;
+}
+#endif
