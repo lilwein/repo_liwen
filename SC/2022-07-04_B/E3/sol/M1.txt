@@ -1,3 +1,0 @@
-Il passaggio da stato waiting a running non è previsto. 
-Prima di poter passare in stato running un evento di sblocco deve portare il processo in stato ready.
-La risposta false è quindi la B

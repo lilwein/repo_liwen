@@ -10,47 +10,55 @@
 #define MAX_LINE	1024
 #define MAX_TOKENS	64
 
+char* cpy(const char* in){
+	size_t n = strlen(in);
+	char* out = malloc(n+1);
+	strcpy(out, in);
+	return out;
+}
 void get_cmd_line(char* argv[MAX_TOKENS]){
-	char pussy[MAX_LINE];
-	fgets(pussy, MAX_LINE, stdin);
-	char* token = strtok(pussy, " \n\t");
-	int num_tok = 0;
-	while(num_tok < MAX_TOKENS && token != NULL){
-		argv[num_tok] = (char*) malloc(sizeof(char)*MAX_LINE);
-		strcpy(argv[num_tok],token);
-		token = strtok(NULL, " \n\t");
-		num_tok++;
+	char line[MAX_LINE];
+	fgets(line, MAX_LINE, stdin);
+	char* token = strtok(line, " \t\n");
+	int argc = 0;
+	while (argc < MAX_TOKENS && token != NULL){
+		argv[argc++] = cpy(token);
+		token = strtok(NULL, " \t\n");
 	}
-	argv[num_tok] = NULL;
+	argv[argc] = NULL;
+}
+void free_args(char* argv[MAX_TOKENS]) {
+    while (*argv) free(*argv++);
 }
 
+int do_cmd(char* argv[MAX_TOKENS]){
+	pid_t pid = fork();
+	int res;
+	if(pid == -1){
+			perror("fork error");
+			exit(EXIT_FAILURE);	
+	}
+	if(pid == 0){
+		res = execvp(argv[0], argv);
+		if(res == -1){
+			printf("unknown command: %s\n", argv[0]);
+			_exit(1);
+		}
+	}
+	res = wait(NULL);
+	if(pid == -1){
+		perror("wait error");
+		exit(EXIT_FAILURE);
+	}
+}
 int do_shell(const char* prompt){
 	while(1){
 		printf("%s", prompt);
 		char* argv[MAX_TOKENS];
 		get_cmd_line(argv);
-		if(strcmp(argv[0], "quit") == 0)
-				break;
-		else if(argv[0] != NULL){
-			int res;
-			pid_t pid = fork();
-			if(pid == -1){
-				perror("fork");
-				exit(EXIT_FAILURE);
-			}
-			if(pid == 0){
-				res = execvp(argv[0], argv);
-				if(res == -1){
-					printf("unknown command %s\n", argv[0]);
-					_exit(EXIT_FAILURE);
-				}
-			}
-			pid = wait(NULL);
-			if(pid == -1){
-				perror("wait");
-				exit(EXIT_FAILURE);
-			}
-		}
+		if(argv[0] == NULL) continue;
+		if(strcmp(argv[0], "quit") == 0) break;
+		do_cmd(argv);
+		free_args(argv);
 	}
-	return EXIT_SUCCESS;
 }
