@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <title>EsercitazioneLab - Pagina di login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./signin.css" />
+    <link rel="stylesheet" href="../bootstrap/css/bootstrap.css" />
+    <script src="./rememberMe.js" type="application/javascript"></script>
+</head>
+<body class="text-center">
+    <form name="myForm" action="login.php" method="POST" class="form-signin m-auto" onsubmit="alertRmb()">
+        <img src="../bootstrap/assets/img/favicons/android-chrome-192x192.png" class="mb-2" width="50px">
+        <h1 class="mb-3">Loggati!</h1>
+        <input type="email" placeholder="E-mail" name="inputEmail"
+            class="form-control" required autofocus>
+        <input type="password" placeholder="Password" name="inputPassword"
+            class="form-control" required>
+        <div id="divRemember" class="checkbox mb-2">
+            <input type="checkbox" name="remember" id="rmb" >
+            <label for="rmb">Ricordami</label>
+        </div>
+        <button type="submit" class="btn btn-primary">Invia!</button>
+    </form>
+</body>
+</html>
