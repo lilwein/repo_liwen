@@ -2,49 +2,24 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#define MAX_LENGHT 50
-char **tokenize(const char *str, const char *delim, int *num_tok){
-
+#define MAX_LENGHT 1027
+char **tokenize(const char* str, const char* delim, int* num_tok){
 	*num_tok = 0;
-	char* buffer = strcpy(buffer, str);	
-	char* token = strtok(str, delim);
+	char* buffer1 = (char*)malloc(sizeof(char)*MAX_LENGHT);
+	strcpy(buffer1, str);	
+	char* token = strtok(buffer1, delim);
 	while(token != NULL){
 		token = strtok(NULL, delim);
-    		num_tok += 1;
+    		*num_tok += 1;
 	}
 	char** pussy =  malloc(sizeof(char*)*(*num_tok));
-	token = strtok(buffer, ", ");
-	pussy[0]= malloc(MAX_LENGHT*sizeof(char));
-	strcpy(pussy[0], token);
-	int i = 0;
-	while(i < (*num_tok)-1){
-		printf("%s\n", pussy[i]);
-		++i;
-		token = strtok(NULL, ", ");
-    		pussy[i]= malloc(MAX_LENGHT*sizeof(char));
+	char* buffer2 = (char*)malloc(sizeof(char)*MAX_LENGHT);
+	strcpy(buffer2, str);
+	token = strtok(buffer2, ", ");
+	for(int i = 0; i < *num_tok; i++){
+		pussy[i]= malloc(MAX_LENGHT*sizeof(char));
 		strcpy(pussy[i], token);
+		token = strtok(NULL, ", ");
 	}
+	return pussy;
 }
-/*int main(){
-	char str[] = "Houston, we have a problem";
-	int num_tok = 0;
-	char* buffer = strcpy(buffer, str);	
-	char* token = strtok(str, ", ");
-	while(token != NULL){
-		token = strtok(NULL, ", ");
-    		num_tok += 1;
-	}
-	char** pussy =  malloc(sizeof(char*)*num_tok);
-	token = strtok(buffer, ", ");
-	pussy[0]= malloc(MAX_LENGHT*sizeof(char));
-	strcpy(pussy[0], token);
-	int i = 0;
-	while(i < num_tok-1){
-		printf("%s\n", pussy[i]);
-		++i;
-		token = strtok(NULL, ", ");
-    		pussy[i]= malloc(MAX_LENGHT*sizeof(char));
-		strcpy(pussy[i], token);
-	}
-	
-}*/
