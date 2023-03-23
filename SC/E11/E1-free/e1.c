@@ -20,7 +20,7 @@ void* mymalloc(size_t m) {
 
 void myfree(void* p) {
 	// Scrivere qui la soluzione...
-	header_t* q = (header_t*)((char*)p-4);
+	/*header_t* q = (header_t*)((char*)p-4);
 	q->next = free_list;
-	free_list = q; 
+	free_list = q;*/ 
 }
