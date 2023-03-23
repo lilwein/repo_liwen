@@ -1,0 +1,77 @@
+/*
+
+Image convolve_image(const Image &im, const Image &filter, bool preserve) {
+    assert(filter.c == 1);
+    Image ret;
+
+    int half = (int) (filter.w / 2);
+    
+    
+    if(preserve){
+        Image ret(im.w,im.h,im.c);
+
+        for(int ch=0; ch<im.c; ch++){
+            for(int row=0; row<im.h; row++){
+                for(int col=0; col<im.w; col++){
+
+                    int x_low = col - half;
+                    int x_high = col + half;
+                    int y_low = row - half;
+                    int y_high = row + half;
+                    //printf("ch= %d\trow= %d\tcol= %d\t",ch,row,col);
+                    //printf("x_low= %d\tx_high= %d\ty_low= %d\ty_high= %d\n",x_low,x_high,y_low,y_high);
+
+                    float count = 0;
+
+                    for(int i=y_low, i_i=0; i<=y_high ; i++, i_i++ ){
+                        for(int j=x_low, j_j=0; j<=x_high ; j++, j_j++ ){
+                            //printf("i= %d\tj= %d\ti_i= %d\tj_j= %d\n",i,j,i_i,j_j);
+
+                            count += im.clamped_pixel(j,i,ch) * filter(j_j,i_i,0) ;
+                        }
+                    }
+                    //printf("ch= %d\trow= %d\tcol= %d\n",ch,row,col);
+                    ret(col,row,ch) = count;
+                    //printf("\nAO\n");
+                }
+            }
+        }
+        return ret;
+    }
+    else{
+        Image ret_n(im.w,im.h,1);
+        Image channels[3];// = (Image*) malloc(3*sizeof(Image));
+
+        for(int ch=0; ch<im.c; ch++){
+            for(int row=0; row<im.h; row++){
+                for(int col=0; col<im.w; col++){
+
+                    int x_low = col - half;
+                    int x_high = col + half;
+                    int y_low = row - half;
+                    int y_high = row + half;
+
+                    float count = 0;
+
+                    for(int i=y_low, i_i=0; i<=y_high ; i++, i_i++ ){
+                        for(int j=x_low, j_j=0; j<=x_high ; j++, j_j++ ){
+                            count += im.clamped_pixel(j,i,ch) * filter(j_j,i_i,0) ;
+                        }
+                    }
+                    ret_n(col,row,0) = count;
+                }
+            }
+            channels[ch] = ret_n;
+        }
+        Image ret(im.w,im.h,im.c);
+        for(int pixel=0; pixel<im.w*im.w; pixel++){
+            for(int c=0; c<im.c; c++){
+                ret.data[pixel] += channels[c].data[pixel] ;
+            }
+            //ret.data[pixel] = channels[0].data[pixel] +channels[1].data[pixel] + channels[2].data[pixel];
+        }
+        return ret;
+    }
+}
+
+*/
