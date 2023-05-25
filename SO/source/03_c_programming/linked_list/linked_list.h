@@ -1,14 +1,14 @@
 #pragma once
 
 typedef struct ListItem {
-  struct ListItem* prev;
-  struct ListItem* next;
+	struct ListItem* prev;
+	struct ListItem* next;
 } ListItem;
 
 typedef struct ListHead {
-  ListItem* first;
-  ListItem* last;
-  int size;
+	ListItem* first;
+	ListItem* last;
+	int size;
 } ListHead;
 
 void List_init(ListHead* head);
