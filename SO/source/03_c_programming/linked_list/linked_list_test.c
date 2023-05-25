@@ -26,8 +26,7 @@ int main(int argc, char** argv) {
 	ListHead head;
 	List_init(&head);
 	for (int i=0; i<MAX_NUM_ITEMS; ++i){
-		IntListItem* new_element= (IntListItem*)
-			malloc(sizeof(IntListItem));
+		IntListItem* new_element= (IntListItem*) malloc(sizeof(IntListItem));
 		if (! new_element) {
 			printf("out of memory\n");
 			break;
@@ -35,8 +34,7 @@ int main(int argc, char** argv) {
 		new_element->list.prev=0;
 		new_element->list.next=0;
 		new_element->info=i;
-		ListItem* result=
-			List_insert(&head, head.last, (ListItem*) new_element);
+		ListItem* result= List_insert(&head, head.last, (ListItem*) new_element);
 		assert(result);
 	}
 	IntList_print(&head);
