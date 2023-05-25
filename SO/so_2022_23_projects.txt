@@ -1,0 +1,160 @@
+Guidelines for projects:
+
+General:
+- All projects should be hosted on github/gitlab or similars.
+
+- Each student performs commits using his own account.
+
+- We want to see the individual commits.
+
+- Projects will be subject to anti plagiarism check and memory check (valgrind) when applicable
+
+- You can use/reuse all the code presented at lesson and in the repo.
+
+- You are allowed to ask stack overflow (or similar) how to solve specific problems
+
+- The projects are (mostly) individual.
+  Special projects (to be discussed with the teachers) might be done in groups.
+  The complecity of a group project will be roughly  proportional to the number
+  of components.
+  In this case, the contribution of each member in the group to the development
+  should be made clear.  Comment your sections in the source with some
+  initials or nickname
+
+  Example:
+ 
+  //gg: here we clear the list of connections and
+  //    do some other stuff
+  List_clear(&connections);
+
+  //bb: puts the element stuff_added in the back of the list
+  //    named connections
+  List_pushBack(&connections, stuff_added);
+
+
+- You can hand in the project anytime.
+- You can do the written exam at each session.
+- The exam will be registered when both (project and written part) are done. 
+
+Arduino Projects:
+- All projects involvig Arduino should include some sort of serial
+  communication with the host.
+  The serial communication should be handled via interrupt.
+
+  Meaning: a project of arduino includes a "server" (arduino part),
+  and a client (PC part). These are two different programs.
+  No cutecom needed for using arduino.
+
+- Use of resources:
+  Use at least one interrupt a timer and an I/O port
+
+Examples
+
+A1. Oscilloscope:
+   Arduino: timed sampling of up to 8 channels on the ADC,
+            and streaming on PC
+
+            Possibility of configuring (from PC)
+            - which channel(s) are being sampled
+            - the sampling frequency
+
+            Possibility of operating in two modes
+            - continuous sampling: (each sample is sent
+              to the PC as it becomes ready)
+            - buffered mode: a set of samples are stored 
+              locally and then sent in bulk
+
+            Implementation of "trigger"
+            (a condition that decides when to start sampling, in buffered mode)
+
+            Serial communication should be asynchronous (use an interrupt
+            on the UART)
+   
+   PC: host program controlling the oscilloscope.
+       Output might be done on text files and displayed with gnuplot.
+          
+            
+            
+A2. Asynchronous IO in Arduino Scheduler.
+   Add functions for buffered writing to the arduino preemptive scheduler.
+   The OS has two buffers, one for reading, one for writing.
+
+   Implement two functions:
+   char getChar(), that reads, if available a character from the input buffer.
+                   If the buffer is empty the "thread" asking for the character
+                   is put in a waiting queue.
+                   When a character becomes available the thread is brought back in running,
+                   and the character is returned (and consumed from the buffer)
+
+   void putChar(char), that writes (if there is enough space) a character on the output buffer.
+                   If the buffer is full, the thread is put in waiting, and resumed whenever there is enough room
+                   in the buffer.
+
+A3. Arduino serial mouse
+   Implement a fake mouse, simulated with 6 keys: up, down , left, right and left/right button.
+   The fake mouse connects to the serial port, and sends the "values", according to a serial mouse
+   protocol at your choice.
+   Once this is done and the protocol verified, you can connect it to the X server following these guide:
+   https://help.ubuntu.com/community/SerialMouseHowto
+   
+   
+-------------------------------------------------------------------------------
+Linux Projects
+
+
+L1. Pseudo Malloc:
+   This is a malloc replacement
+   The system relies on mmap for the physical allocation of memory, but handles the requests in
+   2 ways:
+   - for small requests (< 1/4 of the page size) it uses a buddy allocator.
+     Clearly, such a buddy allocator can manage at most page-size bytes
+     For simplicity use a single buddy allocator, implemented with a bitmap
+     that manages 1 MB of memory for these small allocations.
+
+   - for large request (>=1/4 of the page size) uses a mmap.
+
+L2. Cpu Scheduling Simulator
+   Modify the scheduling simulator presented at lesson to handle
+   1. multiple (configurable) cpus
+   2. preemptive shortest job first with quantum prediction q(t+1) = a * q_current + (1-a) * q(t)
+   
+L3. File System FAT .
+   Implement a file system that uses a pseudo "FAT" on an mmapped buffer.
+   The functions to implement are
+
+   createFile
+   eraseFile
+   write (potentially extending the file boundaries)
+   read
+   seek
+   createDir
+   eraseDir
+   changeDir
+   listDir
+
+   The opening of a file should return a "FileHandle" that stores the position in a file.
+   
+   
+L4. Virtual Memory System Simulator
+   Using an MMU class, with paging allocate a large virtual memory space (16 MB), and use
+   a "swap file" having that size.
+   Use a 1 MB buffer as phyisical memory.
+   
+   The page table sits at the beginning of the memory (simplification), and
+   should support the following flags:
+   - valid
+   - unswappable
+   - read_bit (set by the mmu each time that page is read)
+   - write_bit (set by the mmu each time a page is written)
+
+   define the functions:
+   MMU_writeByte(MMU* mmu, int pos, char c), 
+   char* MMU_readByte(MMU* mmu, int pos );
+
+   that wraps the memory access, doing the right side effect on the mmu/page table
+
+   If an attempt to access at an invalid page, the function  MMU_exception(MMU* mmu, int pos)
+   is called and it has to handle the page fault doing the appropriate operation on disk.
+   As a page replacement policy implement the second chance algorithm.
+
+   Stress the memory with different access patterns, and assume all the virtual memory is allocated

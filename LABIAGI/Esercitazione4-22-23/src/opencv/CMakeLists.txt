@@ -1,0 +1,26 @@
+find_package( OpenCV QUIET )
+include_directories( ${OpenCV_INCLUDE_DIRS} )
+file(MAKE_DIRECTORY ../../interactive_visualization)
+
+if(OpenCV_FOUND)
+  message(---------------------------------------------)
+  message("OpenCV found!!!!")
+  message("Building WITH Visualization")
+  message(---------------------------------------------)
+
+  add_executable(./interactive_visualization/harris test_harris.cpp opencv_utils.cpp opencv_utils.h)
+  add_executable(./interactive_visualization/matches test_matches.cpp opencv_utils.cpp opencv_utils.h)
+  add_executable(./interactive_visualization/inliers test_inliers.cpp opencv_utils.cpp opencv_utils.h)
+  add_executable(./interactive_visualization/panorama test_panorama.cpp opencv_utils.cpp opencv_utils.h)
+
+  target_link_libraries( ./interactive_visualization/harris ${OpenCV_LIBS} )
+  target_link_libraries( ./interactive_visualization/matches ${OpenCV_LIBS} )
+  target_link_libraries( ./interactive_visualization/inliers ${OpenCV_LIBS} )
+  target_link_libraries( ./interactive_visualization/panorama ${OpenCV_LIBS} )
+
+else()
+  message(---------------------------------------------)
+  message("OpenCV NOT found")
+  message("Building WITHOUT Visualization")
+  message(---------------------------------------------)
+endif()
