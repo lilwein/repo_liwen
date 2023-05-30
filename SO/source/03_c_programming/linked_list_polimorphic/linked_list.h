@@ -22,9 +22,9 @@ typedef struct {
 } ListItemOps;
 
 typedef struct ListItem {
+	ListItemOps* ops; // pointer to virtual method table
 	struct ListItem* prev;
 	struct ListItem* next;
-	ListItemOps* ops; // pointer to virtual method table
 } ListItem;
 
 // exposed function that crawls in the virtual method table
