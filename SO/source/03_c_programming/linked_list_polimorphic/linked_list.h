@@ -17,14 +17,14 @@ typedef void (*ListItemDestroyFn)(struct ListItem*);
 // virtual method table for the linked list
 // contains function pointers to the linked list operations
 typedef struct {
-  ListItemDestroyFn dtor_fn;
-  ListItemPrintFn   print_fn;
+	ListItemDestroyFn dtor_fn;
+	ListItemPrintFn   print_fn;
 } ListItemOps;
 
 typedef struct ListItem {
-  struct ListItem* prev;
-  struct ListItem* next;
-  ListItemOps* ops; // pointer to virtual method table
+	struct ListItem* prev;
+	struct ListItem* next;
+	ListItemOps* ops; // pointer to virtual method table
 } ListItem;
 
 // exposed function that crawls in the virtual method table
@@ -37,9 +37,9 @@ void ListItem_print(ListItem* item);
 void ListItem_construct(ListItem* item, ListItemOps* ops);
 
 typedef struct ListHead {
-  ListItem* first;
-  ListItem* last;
-  int size;
+	ListItem* first;
+	ListItem* last;
+	int size;
 } ListHead;
 
 void List_init(ListHead* head);
