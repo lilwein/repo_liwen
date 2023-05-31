@@ -1,0 +1,5 @@
+{
+    "C_Cpp.errorSquiggles": "enabled",
+    "C_Cpp.intelliSenseEngineFallback": "disabled",
+    "cmake.sourceDirectory": "/home/biar/Desktop/repo_liwen/SO/source/04_hardware_avr_intro/02_digital_in"
+}

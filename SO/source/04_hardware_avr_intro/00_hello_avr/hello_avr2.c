@@ -8,7 +8,7 @@ int main(void){
 	printf_init(); 	
 	int k=0;
 	while(1){
-		printf("helloo %d\n",++k);
+		printf("bella bro %d\n",++k);
 		_delay_ms(100); // from delay.h, wait 1 sec
 	}
 	
