@@ -34,7 +34,7 @@ int main(void){
 
     uint8_t prev_state = 0x0;
     int counter = 0;
- 
+
     while(1){
         uint8_t curr_state = PINA & mask;
 

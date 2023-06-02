@@ -20,7 +20,7 @@ int main(void){
   OCR1AH=0;
   OCR1BH=0;
   OCR1CH=0;
-  OCR1CL=1;
+  OCR1CL=1; 
 
   // the LED is connected to pin 13
   // that is the bit 7 of port b, we set it as output
@@ -35,9 +35,11 @@ int main(void){
     // duty_cycle
     OCR1CL=intensity; 
     
-    printf("v %u\n", (int) OCR1CL);
+    printf("v %u\t", (int) OCR1CL);
     _delay_ms(100); // from delay.h, wait 1 sec
-    intensity+=8;
+    intensity += 8;
+
+    printf("intensity %d\n", (int) intensity);
   }
   
 }

@@ -22,7 +22,7 @@ int main(void){
   EIMSK |=1<<INT0;
 
   // trigger int0 on rising edge
-  EICRA= 1<<ISC01 | 1<<ISC00;
+  EICRA= 1<<ISC00;
   sei();
   while(1){
     while (! interrupt_occurred);

@@ -29,29 +29,20 @@ int main(void){
 
     printf_init();
 
-    DDRA &= ~mask;
-    PORTA |= mask;
+    DDRB &= ~mask;
+    PORTB |= mask;
 
     uint8_t prev_state = 0x0;
-    int counter = 0;
  
     while(1){
-        uint8_t curr_state = PINA & mask;
+        uint8_t curr_state = PINB & mask;
 
-        uint8_t idx = (prev_state << 2) | curr_state;
-
-        int8_t value = _transition_table[idx];
-
-        counter += value;
-
-        printf("Curr state: %02x\n",curr_state);
-        printf("Idx: %d\n",idx);
-        printf("Value: %d\n",value);
-        printf("Counter: %d\n",counter);
-        printf("****************");
+        if(curr_state != prev_state){
+            printf("state change %x -> %x\n", (int) prev_state, (int) curr_state);
+        }
 
         prev_state = curr_state;
-        _delay_ms(1000); // from delay.h, wait 1.0s
+        _delay_ms(1); // from delay.h, wait 1.0s
     }
 
     return 0;

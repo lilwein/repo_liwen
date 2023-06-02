@@ -34,6 +34,6 @@ int main(void){
     while (! int_occurred);
     // we reset the flag;
     int_occurred=0;
-    printf("int %u, p:%x, c:%x!\n", int_count, previous_pins, current_pins);
+    printf("int %u, p:%u, c:%u\n", int_count, previous_pins, current_pins);
   }
 }

@@ -17,7 +17,7 @@ void UART_init(void){
 }
 
 void UART_putChar(uint8_t c){
-  // wait for transmission completed, looping on status bit
+  // wait for transmission completed, looping on status bit 
   while ( !(UCSR0A & (1<<UDRE0)) );
 
   // Start transmission

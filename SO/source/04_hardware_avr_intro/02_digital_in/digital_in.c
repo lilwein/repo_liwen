@@ -20,8 +20,8 @@ int main(void){
 	PORTB |= mask;
 	
 	while(1){
-		int key=(PINB&mask)==0; // we extract the bit value of the 6th bit
-		printf("switch %02x, %d\n", (int) PINB, key);
+		int key=(PINB&mask); // we extract the bit value of the 6th bit
+		printf("switch %d, %d\n", (int) PORTB, key);
 		_delay_ms(200); // from delay.h, wait 1 sec
 	}
 	

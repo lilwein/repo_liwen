@@ -19,7 +19,7 @@ int main(void){
   while(1){
     uint16_t timer_val=TCNT4; // we read the timer value
     printf("count %u\n", timer_val);
-    _delay_ms(100); // from delay.h, wait 1 sec
+    _delay_ms(1000); // from delay.h, wait 1 sec
   }
   
 }
