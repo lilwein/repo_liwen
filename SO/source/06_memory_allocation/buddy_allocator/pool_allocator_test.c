@@ -23,6 +23,7 @@ int main(int argc, char** argv) {
 						     buffer,
 						     buffer_size);
   printf("%s\n",PoolAllocator_strerror(init_result));
+  printf("\n");
 
   // we allocate_all memory, and a bit more
   
@@ -32,7 +33,8 @@ int main(int argc, char** argv) {
     blocks[i]=block;
     printf("allocation %d, block %p, size%d\n", i, block, allocator.size);  
   }
-
+  printf("\n");
+  
   // we release all memory
   for (int i=0; i<num_items+10; ++i){
     void* block=blocks[i];
@@ -43,7 +45,8 @@ int main(int argc, char** argv) {
       printf("%s\n", PoolAllocator_strerror(release_result));
     }
   }
-
+  printf("\n");
+  
   // we release all memory again (should get a bunch of errors)
   for (int i=0; i<num_items+10; ++i){
     void* block=blocks[i];
@@ -54,6 +57,7 @@ int main(int argc, char** argv) {
       printf("%s\n", PoolAllocator_strerror(release_result));
     }
   }
+  printf("\n");
   
   // we allocate half of the memory, and release it in reverse order
   for (int i=0; i<num_items-5; ++i){
@@ -61,7 +65,8 @@ int main(int argc, char** argv) {
     blocks[i]=block;
     printf("allocation %d, block %p, size%d\n", i, block, allocator.size);  
   }
-
+  printf("\n");
+  
   for (int i=num_items-1; i>=0; --i){
     void* block=blocks[i];
     if (block){
@@ -71,7 +76,8 @@ int main(int argc, char** argv) {
       printf("%s\n", PoolAllocator_strerror(release_result));
     }
   }
-
+  printf("\n");
+  
   // we allocate all  memory,
   // and release only even blocks, in reverse order
   // release odd blocks in reverse order
@@ -80,7 +86,8 @@ int main(int argc, char** argv) {
     blocks[i]=block;
     printf("allocation %d, block %p, size%d\n", i, block, allocator.size);  
   }
-
+  printf("\n");
+  
   for (int i=num_items-1; i>=0; i-=2){
     void* block=blocks[i];
     if (block){
@@ -90,7 +97,8 @@ int main(int argc, char** argv) {
       printf("%s\n", PoolAllocator_strerror(release_result));
     }
   }
-
+  printf("\n");
+  
   for (int i=num_items-2; i>=0; i-=2){
     void* block=blocks[i];
     if (block){
