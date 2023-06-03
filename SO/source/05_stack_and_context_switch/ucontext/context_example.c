@@ -42,6 +42,7 @@ void f1(){
     printf("f1: %d\n", i);
     swapcontext(&f1_context, &f2_context);
   }
+  printf("f1 finished\n");
   setcontext(&main_context);
 }
 
@@ -51,7 +52,8 @@ void f2(){
     printf("f2: %d\n", i);
     swapcontext(&f2_context, &f1_context);
   }
-  setcontext(&main_context);
+  printf("f2 finished\n");
+  // setcontext(&main_context);
 }
 
 char f1_stack[STACK_SIZE];
