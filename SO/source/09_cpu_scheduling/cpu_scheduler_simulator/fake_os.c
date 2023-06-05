@@ -78,7 +78,7 @@ void FakeOS_simStep(FakeOS* os){
 		if (new_process) {
 			printf("\tcreate pid:%d\n", new_process->pid);
 			new_process=(FakeProcess*)List_detach(&os->processes, (ListItem*)new_process);
-			FakeOS_createProcess(os, new_process);
+			FakeOS_createProcess(os, new_process); // trasformo in pcb
 			free(new_process);
 		}
 	}
@@ -91,21 +91,22 @@ void FakeOS_simStep(FakeOS* os){
 		ProcessEvent* e=(ProcessEvent*) pcb->events.first;
 		printf("\twaiting pid: %d\n", pcb->pid);
 		assert(e->type==IO);
-		e->duration--;
+		e->duration--; // è passata un epoca
 		printf("\t\tremaining time:%d\n",e->duration);
-		if (e->duration==0){
+		if (e->duration==0){ // evento terminato
 			printf("\t\tend burst\n");
-			List_popFront(&pcb->events);
+			List_popFront(&pcb->events); // detach first
 			free(e);
-			List_detach(&os->waiting, (ListItem*)pcb);
-			if (! pcb->events.first) {
+			List_detach(&os->waiting, (ListItem*)pcb); // cancello pcb dalla lista waiting
+			if (! pcb->events.first) { // eventi finiti
 				// kill process
 				printf("\t\tend process\n");
 				free(pcb);
-			} else {
+			}
+			else { // ancora eventi
 				//handle next event
 				e=(ProcessEvent*) pcb->events.first;
-				switch (e->type){
+				switch (e->type){ // sposto pcb in lista running o waiting
 				case CPU:
 					printf("\t\tmove to ready\n");
 					List_pushBack(&os->ready, (ListItem*) pcb);
@@ -122,8 +123,7 @@ void FakeOS_simStep(FakeOS* os){
 	
 
 	// decrement the duration of running
-	// if event over, destroy event
-	// and reschedule process
+	// if event over, destroy event and reschedule process
 	// if last event, destroy running
 	FakePCB* running=os->running;
 	printf("\trunning pid: %d\n", running?running->pid:-1);
@@ -132,14 +132,15 @@ void FakeOS_simStep(FakeOS* os){
 		assert(e->type==CPU);
 		e->duration--;
 		printf("\t\tremaining time:%d\n",e->duration);
-		if (e->duration==0){
+		if (e->duration==0){ // abbiamo consumato il burst del processo running
 			printf("\t\tend burst\n");
 			List_popFront(&running->events);
 			free(e);
 			if (! running->events.first) {
 				printf("\t\tend process\n");
 				free(running); // kill process
-			} else {
+			}
+			else {
 				e=(ProcessEvent*) running->events.first;
 				switch (e->type){
 				case CPU:
