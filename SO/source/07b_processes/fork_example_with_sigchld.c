@@ -19,8 +19,8 @@ const char child_prefix[]="child";
 const char* prefix=parent_prefix;
 pid_t pid;
 
-const int num_rounds_parent=10;
-const int num_rounds_child=1;
+const int num_rounds_parent=1;
+const int num_rounds_child=10;
 void childFunction() {
   for (int round_num=0; round_num<num_rounds_child; round_num++) {
     printf("%s looping, pid: %d, round: %d \n", prefix, pid, round_num);
