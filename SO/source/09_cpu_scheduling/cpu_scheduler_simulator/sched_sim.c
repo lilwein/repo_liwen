@@ -28,13 +28,14 @@ void schedRR(FakeOS* os, void* args_){
 	// if duration>quantum
 	// push front in the list of event a CPU event of duration quantum
 	// alter the duration of the old event subtracting quantum
-	if (e->duration>args->quantum) {
+	if (e->duration>args->quantum) { // divido l'evento per il quanto
 		ProcessEvent* qe=(ProcessEvent*)malloc(sizeof(ProcessEvent));
 		qe->list.prev=qe->list.next=0;
 		qe->type=CPU;
-		qe->duration=args->quantum;
-		e->duration-=args->quantum;
-		List_pushFront(&pcb->events, (ListItem*)qe);
+		// split
+		qe->duration = args->quantum; // primo evento, durata = 1 quanto
+		e->duration -= args->quantum; // secondo evento, durata = durata-quanto
+		List_pushFront(&pcb->events, (ListItem*)qe); // aggiunge in testa
 	}
 };
 
@@ -53,7 +54,7 @@ int main(int argc, char** argv) {
 		if (num_events) {
 			FakeProcess* new_process_ptr=(FakeProcess*)malloc(sizeof(FakeProcess));
 			*new_process_ptr=new_process;
-			List_pushBack(&os.processes, (ListItem*)new_process_ptr);
+			List_pushBack(&os.processes, (ListItem*)new_process_ptr); // inserisce alla fine
 		}
 	}
 	printf("num processes in queue %d\n", os.processes.size);

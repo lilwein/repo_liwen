@@ -161,6 +161,7 @@ void FakeOS_simStep(FakeOS* os){
 	// call schedule, if defined
 	if (os->schedule_fn && ! os->running){
 		(*os->schedule_fn)(os, os->schedule_args); 
+		// lo scheduler modificherà os->running
 	}
 
 	// if running not defined and ready queue not empty
