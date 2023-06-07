@@ -34,7 +34,7 @@ typedef enum {
 } SegmentFlags;
 
 typedef struct SegmentDescriptor{
-  uint32_t base: PAGE_NBITS;  
+  uint32_t base: PAGE_NBITS;  // PAGE_NBITS sono i bit necessari
   uint32_t limit: PAGE_NBITS;
   SegmentFlags flags: SEGMENT_FLAGS_NBITS;
 } SegmentDescriptor;
