@@ -30,7 +30,7 @@ fake_linking: fake_linking.c
 	$(CC) $(CCOPTS) -o $@ $^
 
 fake_mmu_test: fake_mmu_test.c fake_mmu.c 
-	# $(CC) $(CCOPTS) -D_FAKE_MMU_TEST_ -o $@ $
+	# $(CC) $(CCOPTS) -D_FAKE_MMU_TEST_ -o $@ $^
 	$(CC) $(CCOPTS) -o $@ $^
 
 
