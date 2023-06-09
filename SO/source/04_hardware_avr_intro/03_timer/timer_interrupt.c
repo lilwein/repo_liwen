@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <avr/sleep.h>
 
 #include "../avr_common/uart.h" // this includes the printf and initializes it
 
@@ -21,7 +22,7 @@ ISR(TIMER5_COMPA_vect) {
 
 int main(void){
   printf_init(); 
-  const int timer_duration_ms=100;
+  const int timer_duration_ms=1000;
   
   // configure timer
   // set the prescaler to 1024
@@ -43,9 +44,10 @@ int main(void){
   // enable int
   sei();
   while(1){
-    while (! interrupt_occurred);
+    // while (! interrupt_occurred);
     // we reset the flag;
     interrupt_occurred=0;
     printf("int %u!\n", int_count);
+    sleep_cpu();
   }
 }
