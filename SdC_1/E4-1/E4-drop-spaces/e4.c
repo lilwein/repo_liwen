@@ -1,15 +1,11 @@
-// Scrivi la soluzione qui...
 void drop_spaces(char* text){
-	char *s = text;
+	char* res = text;
 	while(*text){
-		if(*text == ' ')
-			text++;
-		else{
-			*s = *text;
-			s++;
-			text++;
+		if(*text!=' ') {
+			*res = *text;
+			res++;
 		}
+		text++;
 	}
-	*s = '\0';
-	return;
+	*res='\0';
 }

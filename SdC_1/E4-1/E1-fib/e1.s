@@ -1,21 +1,27 @@
 .globl fib
 fib:
-    pushl %ebx
-    pushl %edi
+    push %edi
+    push %esi
     subl $4, %esp
+
     movl 16(%esp), %edi
-    movl $1, %eax
     cmpl $2, %edi
-    jl E
+    jge F
+    movl $1, %eax
+    jmp R
+
+F:  decl %edi
+    movl %edi, (%esp)
+    call fib
+    movl %eax, %esi
+
     decl %edi
     movl %edi, (%esp)
     call fib
-    movl %eax, %ebx
-    decl %edi
-    movl %edi, (%esp)
-    call fib
-    addl %ebx, %eax
-E:  addl $4, %esp
-	popl %edi
-	popl %ebx
+    addl %esi, %eax
+
+R:  addl $4, %esp
+    pop %esi
+    pop %edi
+
     ret

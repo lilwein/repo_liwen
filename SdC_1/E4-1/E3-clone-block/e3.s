@@ -1,25 +1,31 @@
-# scrivere la soluzione qui...
 .globl clone
+
 clone:
-	pushl %esi
-	pushl %edi
-	pushl %ebx
+	push %esi
+	push %edi
+	push %ebx
 	subl $12, %esp
-	movl 28(%esp), %esi
-	movl 32(%esp), %ebx
-	movl %ebx, (%esp)
-	call malloc
-	movl %eax, %edi
-	xorl %eax, %eax
-L:	testl %edi, %edi
-	je E
+
+	movl 28(%esp), %esi		# esi = src
+	movl 32(%esp), %edi		# edi = n
+
 	movl %edi, (%esp)
+	call malloc
+	movl %eax, %ebx			# esi = malloc(n)
+	testl %ebx, %ebx
+	jne ND
+	movl $0, %eax
+	jmp R
+
+ND:	movl %ebx, (%esp)
 	movl %esi, 4(%esp)
-	movl %ebx, 8(%esp)
+	movl %edi, 8(%esp)
 	call memcpy
-	movl %edi, %eax
-E:	addl $12, %esp
-	popl %ebx
-	popl %edi
-	popl %esi
+	movl %ebx, %eax
+	jmp R
+
+R:	addl $12, %esp
+	pop %ebx
+	pop %edi
+	pop %esi
 	ret
