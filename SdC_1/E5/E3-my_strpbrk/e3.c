@@ -5,16 +5,18 @@
 // oppure `NULL` se alcun carattere di s2 appare in `s1` prima che `s1` 
 // stessa termini.
 
-// scrivere la soluzione qui...
 char *my_strpbrk(const char *s1, const char *s2){
-	const char* p;
+	const char* aux = s2;
 	while(*s1){
-		for(p=s2; *p; p++){
-			if(*s1 == *p)
+		while(*aux){
+			if(*aux == *s1){
 				return s1;
+			}
+			aux++;
 		}
+		aux = s2;
 		s1++;
 	}
-	return NULL;
+
 }
 

@@ -1,16 +1,29 @@
-# Scrivere la soluzione qui...
 .globl list_concat
+
 list_concat:
-	movl 8(%esp), %edx
-	movl 4(%esp), %ecx
-	movl (%ecx), %eax
-	cmpl $0, %eax
-	jnz L
-	movl %edx, (%ecx)
-	jmp F
-L:	cmpl $0, 4(%eax)
-	jz E;
-	movl 4(%eax), %eax
-	jmp L
-E:	movl %edx, 4(%eax)
-F:	ret
+	push %ebx
+	push %esi
+	push %edi
+
+	movl 16(%esp), %esi			# node_t** esi = l1;
+	movl 20(%esp), %edi			# node_t* edi = l2;
+	movl (%esi), %ebx			# node_t* ebx = p = *l1;
+
+	cmpl $0, %ebx
+	jne W
+	movl %edi, (%esi)
+	jmp R
+
+W:	movl 4(%ebx),%ecx 
+	cmpl $0, %ecx
+	je EW
+	movl %ecx, %ebx
+	jmp W
+
+EW:	movl %edi, 4(%ebx) 
+
+R:	pop %edi
+	pop %esi
+	pop %ebx
+	ret
+	

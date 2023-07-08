@@ -1,25 +1,32 @@
-// Scrivi la soluzione qui...
-#include <stdio.h>
+#include "e3.h"
 #include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
-#define MAX_LENGHT 1027
-char **tokenize(const char* str, const char* delim, int* num_tok){
-	*num_tok = 0;
-	char* buffer1 = (char*)malloc(sizeof(char)*MAX_LENGHT);
-	strcpy(buffer1, str);	
-	char* token = strtok(buffer1, delim);
-	while(token != NULL){
+
+char **tokenize(const char *str, const char *delim, int *num_tok){
+	int cnt = 0;
+	int size = strlen(str);
+	char* aux = (char*)malloc(size+1);
+	strcpy(aux, str);
+
+	char* token = strtok(aux, delim);
+	while(token!=NULL) {
+		cnt++;
 		token = strtok(NULL, delim);
-    		*num_tok += 1;
 	}
-	char** pussy =  malloc(sizeof(char*)*(*num_tok));
-	char* buffer2 = (char*)malloc(sizeof(char)*MAX_LENGHT);
-	strcpy(buffer2, str);
-	token = strtok(buffer2, ", ");
-	for(int i = 0; i < *num_tok; i++){
-		pussy[i]= malloc(MAX_LENGHT*sizeof(char));
-		strcpy(pussy[i], token);
-		token = strtok(NULL, ", ");
+	*num_tok = cnt;
+
+	char** res = (char**)malloc( cnt * sizeof(char*) );
+	
+	strcpy(aux, str);
+
+	token = strtok(aux, delim);
+	for(int i=0; i<cnt || token!=NULL; i++ ) {
+		res[i] = (char*) malloc(strlen(token)+1);
+		strcpy(res[i], token);
+		token = strtok(NULL, delim);
 	}
-	return pussy;
+	free(aux);
+	return res;
+
 }

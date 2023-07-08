@@ -1,31 +1,36 @@
-# Scrivere la soluzione qui...
 .globl binsearch
-binsearch:							#int binsearch(int *v, int n, int x){
-	pushl %esi
-	pushl %edi
-	pushl %ebx
-	pushl %ebp
-	movl 20(%esp), %edx
-	movl 24(%esp), %ebx
-	movl 28(%esp), %ebp
-	xorl %esi, %esi
-	movl %ebx, %edi
+
+binsearch:
+	push %ebx
+	push %edi
+	push %esi
+
+	movl 16(%esp), %ebx			# int* ebx = v;
+	movl 20(%esp), %edi			# int edi = n;
+	movl 24(%esp), %esi			# int esi = x;
+
+	xorl %edx, %edx				# int edx = i = 0;
+L:	cmpl %edi, %edx
+	movl $0, %eax
+	jge R
+	movl %edx, %ecx				# int ecx = i;
+	addl %edi, %ecx				# ecx = i + n;
+	sarl $1, %ecx				# ecx = (ecx>>1);
+	movl (%ebx, %ecx, 4), %eax
+	cmpl %esi, %eax
+	jne C
 	movl $1, %eax
-L:	cmpl %edi, %esi
-	jge E
-	leal (%esi, %edi), %ecx
-	sarl %ecx
-	cmpl %ebp, (%edx, %ecx, 4)
-	je F
-	cmpl %ebp, (%edx, %ecx, 4)
-	jle R
+	jmp R
+C:	cmpl %esi, %eax
+	jle E
 	movl %ecx, %edi
 	jmp L
-R:	leal 1(%ecx), %esi
+E:	movl %ecx, %edx
+	incl %edx
 	jmp L
-E:	xorl %eax, %eax
-F:	popl %ebp
-	popl %ebx
-	popl %edi
-	popl %esi
+
+
+R:	pop %esi
+	pop %edi
+	pop %ebx
 	ret

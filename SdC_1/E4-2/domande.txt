@@ -1,0 +1,6 @@
+1) NO
+2) addl $4, %eax
+3)
+4)
+5) movl $7, 20(%eax)
+6) Segmentation Fault
