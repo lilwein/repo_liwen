@@ -16,7 +16,7 @@ static void do_sort(int *v, int n) {
 }
 
 void handler(int signum){
-	printf("%lf\n", 100.0 * i/max);
+	printf("%lf%\n", 100.0 * i/max);
 	ualarm(500000,0);
 }
 void sort(int *v, int n) {
