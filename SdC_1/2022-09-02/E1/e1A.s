@@ -1,41 +1,47 @@
-# scrivere qui la soluzione...
 .globl div_vectors
+
 div_vectors:
-    pushl %esi
-    pushl %edi
-    pushl %ebx
-    pushl %ebp
+    push %edi
+    push %esi
+    push %ebx
+    push %ebp
     subl $4, %esp
 
-    movl $0, %edi
-    cmpl $0, 24(%esp)               
-    je R                            
-    cmpl $0, 28(%esp)               
-    je R                            
-    cmpl $0, 32(%esp)               
-    je R                            
-    movl $4, %edi                   
-    imull 32(%esp), %edi            
-    movl %edi, (%esp)
-    call malloc             
-    movl %eax, %edi         
-    movl $0, %ebx           
-    movl 24(%esp), %esi    
-    movl 28(%esp), %ecx    
-L:  cmpl 32(%esp), %ebx    
-    jge R                  
-    movl (%esi, %ebx,4), %eax       
+    movl 24(%esp), %ebx                 # unsigned int* ebx = a;
+    movl 28(%esp), %ebp                 # unsigned int* ebp = b;
+
+    xorl %eax, %eax
+    cmpl $0, 24(%esp)
+    je R
+    cmpl $0, 28(%esp)
+    je R
+    cmpl $0, 32(%esp)
+    je R
+
+    movl 32(%esp), %ecx
+    imull $4, %ecx                      # int ecx = 4*n;
+    movl %ecx, (%esp)
+    call malloc
+    movl %eax, %esi                     # unsigned int* esi = out;
+
+    xorl %edi, %edi                     # int edi = i = 0;
+
+L:  cmpl 32(%esp), %edi
+    jge E
     xorl %edx, %edx
-    movl (%ecx, %ebx, 4), %ebp      
-    idivl %ebp                      
-    movl %eax, (%edi, %ebx, 4)
-    incl %ebx
+    movl (%ebx, %edi, 4), %eax
+    movl (%ebp, %edi, 4), %ecx
+    idiv %ecx
+    movl %eax, (%esi, %edi, 4)
+    incl %edi
     jmp L
-R:  movl %edi, %eax
-    
+
+E:  movl %esi, %eax
+
+R:
     addl $4, %esp
-    popl %ebp
-    popl %ebx
-    popl %edi
-    popl %esi
+    pop %ebp
+    pop %ebx
+    pop %esi
+    pop %edi
     ret

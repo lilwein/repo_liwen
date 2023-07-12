@@ -6,7 +6,6 @@
 
 int loadStringsFromFile (const char * filename, char *** list){
 
-
     FILE* file = fopen(filename, "r");
 
     int rows=0;
@@ -15,26 +14,21 @@ int loadStringsFromFile (const char * filename, char *** list){
         rows++;
     }
     char** array = (char**) malloc(rows*sizeof(char*));
-    // printf("\n\nrows:\t%d\n\n", rows);
 
     fseek(file, 0, SEEK_SET);
 
-    char* line = fgets(line, 1000, file);
-
-    // printf("\n\n%s\n\n", line);
+    char* line = (char*) malloc(1000);
+    
     int i = 0, cnt = 0;
-    while(i<rows){
+    while(fgets(line, 1000, file)){
         if(isalpha(*line)){
             array[i] = line;
             cnt++;
         }
-        // printf("\n\n%s\n\n", array[i]);
-        fgets(line, 1000, file);
         i++;
     }
     
     fclose(file);
-    // return 1;
 
     *list = array;
 
