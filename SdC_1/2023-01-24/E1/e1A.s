@@ -1,45 +1,58 @@
-# scrivere qui la soluzione...
 .globl strings_are_upper
+
 strings_are_upper:
-    pushl %ebx
-    pushl %ebp
-    pushl %edi
-    pushl %esi
+    
+    push %edi
+    push %esi
+    push %ebx
+    push %ebp
     subl $4, %esp
 
-    movl $0, %ecx
-    cmpl $0, 24(%esp)
+    movl 24(%esp), %ebx             # char** ebx = array;
+    # movl 28(%esp), %ebp             # int ebp = n;
+
+    xorl %eax, %eax
+    cmpl $0, %ebx
     je R
     cmpl $0, 28(%esp)
     jle R
-    movl 24(%esp), %ebx
-    movl 28(%esp), %edi
-    leal 4(%edi), %eax
-    movl %eax, (%esp)
-    call malloc
-    movl %eax, %ecx
-    movl $0, %ebp
-L1: cmpl %edi, %ebp
-    jge R
-    movl (%ebx, %ebp,4), %esi
-    movl $1, (%ecx, %ebp, 4)
-L2: cmpb $0, (%esi)
-    je E1
-    movsbl (%esi), %eax
-    movl %eax, (%esp)
-    call isupper
-    cmpl $0, %eax
-    je F
-    incl %esi
-    jmp L2
-F:  movl $0, (%ecx, %ebp, 4)
-E1: incl %ebp
-    jmp L1
 
-R:  movl %ecx, %eax
+    movl 28(%esp), %esi
+    imull $4, %esi
+    movl %esi, (%esp)
+    call malloc
+
+    movl $0, %esi                   # int esi = i = 0;
+F:  cmpl %esi, 28(%esp)
+    jle R
+    movl (%ebx, %esi, 4), %ebp      # char* ebp = s = array[i];
+    movl $1, (%eax, %esi, 4)        # eax[esi] = 1;
+
+W:  movb (%ebp), %cl                # char cl = *ebp;
+    cmpb $0, %cl
+    je EW
+    
+    movl %eax, %edi  
+    movl $0, (%esp)
+    movb %cl, (%esp)
+    call isupper
+    movl %eax, %ecx
+    movl %edi, %eax
+    cmpl $0, %ecx
+    jne C
+    movl $0, (%eax, %esi, 4)        # eax[esi] = 1;
+    jmp EW
+
+C:  incl %ebp
+    jmp W
+
+EW: incl %esi
+    jmp F
+
+R:  
     addl $4, %esp
-    popl %esi
-    popl %edi
-    popl %ebp
-    popl %ebx
+    pop %ebp
+    pop %ebx
+    pop %esi
+    pop %edi
     ret

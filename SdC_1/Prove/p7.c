@@ -1,21 +1,17 @@
-#include "e2A.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 void reverseTextFile(const char * input_file, const char * output_file){
     
     FILE* f1 = fopen(input_file, "r");
-    int cnt = 0;
+    
     char* line = malloc(1000);
-    line = fgets(line, 1000, f1);
-    while(line!=NULL) {
-        // printf("%s", line);
-        cnt++;
-        line = fgets(line, 1000, f1);
-    }
-    fclose(f1);
-    // printf("\ncnt: %d\n\n", cnt);
+    fseek(f1,0,SEEK_END);
+    int cnt = ftell(f1);
+    fseek(f1,0,SEEK_SET);
+    printf("\n%d\n", cnt);
 
     char **righe = malloc(cnt*sizeof(char*));
 
@@ -41,4 +37,12 @@ void reverseTextFile(const char * input_file, const char * output_file){
     }
 
     fclose(f2);
+}
+
+int main(){
+
+    reverseTextFile("p7_input.txt", "p7_output.txt");
+
+
+    return 0;
 }

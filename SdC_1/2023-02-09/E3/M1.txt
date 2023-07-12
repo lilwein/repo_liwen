@@ -1,0 +1,1 @@
+Architettura IA32 si basa sul little endian quindi i bit meno significativi saranno agli indirizzi piu bassi.

@@ -1,29 +1,42 @@
-# scrivere qui la soluzione...
 .globl str_to_upper
+
 str_to_upper:
-	pushl %ebx
-    pushl %esi
+    push %edi
+    push %esi
+    push %ebx
+    push %ebp
     subl $4, %esp
-    xorl %esi, %esi         
-    movl 16(%esp), %ebx
-    testl %ebx, %ebx        # if (s == NULL) 
-    je E                    # goto E;
+
+    movl 24(%esp), %ebx             # char* ebx = s;
+
+    xorl %eax, %eax
+
+    cmpl $0, %ebx
+    je R
+
     movl %ebx, (%esp)
-    call strdup             # char* res = strdup(s); 
-    movl %eax, %esi
-    movl %eax, %ebx         # char* copy = res;
-L:
-    cmpb $0, (%ebx)         # if (*copy == 0) 
-    je E                    # goto E;
-    movsbl (%ebx), %eax
-    movl %eax, (%esp)    
-    call toupper            # char c = toupper(*copy); 
-    movb %al, (%ebx)        # *copy = c;
-    incl %ebx               # copy++;
-    jmp L                   # goto L;
-E:
-    movl %esi, %eax
+    call strdup                     # char* eax = s_copy = strdup(s);
+    movl %eax, %edi                 # char* edi = s_copy;
+    movl %eax, %esi                 # char* esi = copy;
+
+L:  movb (%esi), %dl                # char dl = *copy;
+    cmpb $0, %dl
+    je E
+    movsbl %dl, %eax
+    movl %eax, (%esp)
+    call toupper
+    movb %al, (%esi)
+    incl %esi
+    jmp L
+
+E:  movl %edi, %eax
+    jmp R
+
+
+R:
     addl $4, %esp
-    popl %esi
-    popl %ebx
-    ret                     # return res;
+    pop %ebp
+    pop %ebx
+    pop %esi
+    pop %edi
+    ret
