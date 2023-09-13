@@ -1,0 +1,1 @@
+la funzione foo potrebbe modificare il registro ecx poichè questo non è stato pushato in stack

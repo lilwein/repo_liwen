@@ -1,0 +1,4 @@
+c occupa 4 byte poichè è puntatore
+d occupa 1 byte
+1 byte di padding
+e occupa 2 byte
