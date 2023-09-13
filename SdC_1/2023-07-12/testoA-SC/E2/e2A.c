@@ -1,48 +1,40 @@
-#include "e2A.h"
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
-#include <unistd.h>
 #include <sys/wait.h>
-#include <ctype.h>
+#include <unistd.h>
+
 
 int vowelcount(const char** s, int n){
-    if( s==NULL || n==0) return -1;
+    if(n==0 || s==NULL) return -1;
 
-    pid_t p;
+    pid_t pid;
     int status;
-    int cnt = 0;
-    
+    int ris = 0;
+
     for(int i=0; i<n; i++){
-        p = fork();
-
-        // processo figlio
-        if(p==0){
-            char* str = s[i];
-            int len = strlen(str);
-            int vocali = 0;
-
-            for(int j=0; j<len; j++){
-                char ch = tolower(str[j]);
-                if(ch=='a'||ch=='e'||ch=='i'||ch=='o'||ch=='u') vocali++;
+        pid_t pid = fork();
+        if(pid==0){
+            int cnt=0;
+            for(int k=0; k<strlen(s[i]); k++){
+                char r = s[i][k];
+                if(r=='a'||r=='A'||r=='e'||r=='E'||r=='i'||r=='I'||r=='o'||r=='O'||r=='u'||r=='U'){
+                    cnt++;
+                }
             }
-
-            exit(vocali);
+            exit(cnt);
         }
-        
     }
-    
-    for (int i = 0; i < n; i++) {
-	    while(wait(&status) > 0){
-			if(WIFEXITED(status)){
-				cnt += WEXITSTATUS(status);
-			}
-	    }
-    }
-    
-    
-    
-    return cnt;
 
+
+    for(int k=0; k<n; k++){
+        if(wait(&status)){
+            if(WIFEXITED(status)){
+                ris+= WEXITSTATUS(status);
+            }
+        }
+    }
+    return ris;
+    
 }

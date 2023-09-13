@@ -1,10 +1,10 @@
 .globl adler32
 
 adler32:
-    push %edi
-    push %esi
     push %ebx
     push %ebp
+    push %esi
+    push %edi
     subl $8, %esp
 
     xorl %eax, %eax
@@ -13,43 +13,40 @@ adler32:
     cmpl $0, 32(%esp)
     je R
 
-    movl 28(%esp), %esi         # unsigned char* esi = data;
+    movl $1, %esi               # unsigned esi = 1;
+    movl $0, %ebx               # unsigned ebx = 0;
 
-    movl $1, %ebp               # unsigned ebp = a = 0;
-    movl $0, %ebx               # unsigned ebx = b = 0;
-
-    leal 4(%esp), %eax
-    movl %eax, (%esp)
+    leal 4(%esp), %ecx
+    movl %ecx, (%esp)
     call get_adler_constant
 
-    xorl %edi, %edi             # int edi = i = 0;
+    movl 28(%esp), %ebp
+    xorl %edi, %edi             # int edi = 0;
 L:  cmpl 32(%esp), %edi
-    jae RA
+    jae E
+    movzbl (%ebp, %edi, 1), %eax
+    addl %esi, %eax
     xorl %edx, %edx
-
-    movzbl (%esi, %edi, 1), %eax
-    addl %ebp, %eax
     divl 4(%esp)
-    movl %edx, %ebp
-
-    xorl %edx, %edx
+    movl %edx, %esi
+    
     movl %ebx, %eax
-    addl %ebp, %eax
+    addl %esi, %eax
+    xorl %edx, %edx
     divl 4(%esp)
     movl %edx, %ebx
-
+    
     incl %edi
     jmp L
 
-RA: movl %ebx, %eax
-    shll $16, %eax
-    orl %ebp, %eax
-    jmp R
 
+E:  shll $16, %ebx
+    orl %ebx, %esi
+    movl %esi, %eax
 
 R:  addl $8, %esp
+    pop %edi
+    pop %esi
     pop %ebp
     pop %ebx
-    pop %esi
-    pop %edi
     ret
