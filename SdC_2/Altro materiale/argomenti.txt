@@ -1,0 +1,10 @@
+Algoritmi: (Videolezioni 4 e 5)
+	dekker,dijkstra,bakery (uscito a gennaio), algoritmo del banchiere (per individuare il deadlock)
+
+
+per la parte di programmazione rivedrei tutte le esercitazioni, ma di lezione penso basti 
+rivedere le slide e le ~2h in cui spiega gli algoritmi (dekker, dijkstra, bakery, banker)
+
+
+Teoria:
+-Sicurezza
