@@ -6,8 +6,17 @@
 #include <sys/wait.h>
 #include <pthread.h>
 
+// gcc -o reactivity-processes reactivity-processes.c performance.c -lrt -lm
+
+#define ITEMS   (1 << 24)
+#define STEP    1024
+int* global_buff = NULL;
+
 void do_work() {
-	return;
+	int j;
+    for (j = 0; j < ITEMS; j += STEP) {
+        global_buff[j] = j;
+    }
 }
 
 int main(int argc, char **argv) {
@@ -18,7 +27,14 @@ int main(int argc, char **argv) {
 	
 	// parse N from the command line
 	int n = atoi(argv[1]);
-		
+	
+	// allocate a large buffer of zeroed memory 
+	global_buff = (int*)calloc(ITEMS, sizeof(int));
+    if (global_buff == NULL) {
+        fprintf(stderr, "Cannot allocate memory!\n");
+        exit(EXIT_FAILURE);
+    }
+
 	// process reactivity
 	printf("Process reactivity, %d tests...\n", n);
 	unsigned long sum = 0;

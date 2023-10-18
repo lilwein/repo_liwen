@@ -6,14 +6,24 @@
 #include <sys/wait.h>
 #include <pthread.h>
 
+// gcc -o reactivity-threads reactivity-threads.c performance.c -lrt -lm -lpthread
+
+#define ITEMS   (1 << 24)
+#define STEP    1028
+int* global_buff = NULL;
+
 void do_work() {
-	return;
+    int j;
+    for (j = 0; j < ITEMS; j += STEP) {
+        global_buff[j] = j;
+    }
 }
 
 void* thread_fun(void *arg) {
 	do_work();
 	pthread_exit(NULL);
 }
+
 
 int main(int argc, char **argv) {
 	if (argc != 2) {
@@ -23,6 +33,13 @@ int main(int argc, char **argv) {
 	
 	// parse N from the command line
 	int n = atoi(argv[1]);
+	
+	// allocate a large buffer of zeroed memory 
+	global_buff = (int*)calloc(ITEMS, sizeof(int));
+    if (global_buff == NULL) {
+        fprintf(stderr, "Cannot allocate memory!\n");
+        exit(EXIT_FAILURE);
+    }
 
 	// thread reactivity
 	printf("Thread reactivity, %d tests...\n", n);
