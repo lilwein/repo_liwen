@@ -27,34 +27,33 @@ void* client(void* arg_ptr) {
 
     int i, ret = 0;
 
-    /*** Process the work items assigned to the thread ***/
-    for (i = 0; i < args->num_tasks; ++i) {
-        if (i%2 == 0){
-            ret = sem_wait(args->semaphore);
-            if (ret) {
-                printf("[FATAL ERROR] Could not lock the semaphore from thread %d: %s\n", args->ID, strerror(errno));
-                exit(1);
-            }
-            printf("[@Thread%d] Resource acquired...\n", args->ID);
-        }
-        // we simulate a work item by sleeping for 0 up to MAX_SLEEP seconds
-        printf("[@Thread%d] Task %d...\n", args->ID,i);
-        sleep(rand() % (MAX_SLEEP+1));
+    /*** Acquire the resource ***/
+    ret = sem_wait(args->semaphore);
 
-        if (i%2 == 1 || i == args->num_tasks-1){
-            /*** Free the resource ***/
-            ret = sem_post(args->semaphore);
-
-            if (ret) {
-                printf("[FATAL ERROR] Could not unlock the semaphore from thread %d: %s\n", args->ID, strerror(errno));
-                exit(1);
-            }
-            printf("[@Thread%d] Done. Resource released!\n", args->ID);
-        }
+    if (ret) {
+        fprintf(stderr,"[FATAL ERROR] Could not lock the semaphore from thread %d: %s\n", args->ID, strerror(errno));
+        exit(1);
     }
 
-    free(args); // I should free my own arguments!
+    printf("[@Thread%d] Resource acquired...\n", args->ID);
 
+    /*** Process the work items assigned to the thread ***/
+    for (i = 0; i < args->num_tasks; ++i) {
+        // we simulate a work item by sleeping for 0 up to MAX_SLEEP seconds
+        sleep(rand() % (MAX_SLEEP+1));
+    }
+
+    /*** Free the resource ***/
+    ret = sem_post(args->semaphore);
+
+    if (ret) {
+        fprintf(stderr,"[FATAL ERROR] Could not unlock the semaphore from thread %d: %s\n", args->ID, strerror(errno));
+        exit(1);
+    }
+
+    printf("[@Thread%d] Done. Resource released!\n", args->ID);
+
+    free(args); // I should free my own arguments!
     return NULL;
 }
 
@@ -72,12 +71,13 @@ int main(int argc, char* argv[]) {
     ret = sem_init(semaphore, 0, NUM_RESOURCES);
 
     if (ret) {
-        printf("[FATAL ERROR] Could not create a semaphore: %s\n", strerror(errno));
+        fprintf(stderr,"[FATAL ERROR] Could not create a semaphore: %s\n", strerror(errno));
         exit(1);
     }
 
     /* Main loop */
     printf("[DRIVER] Press ENTER to spawn %d new threads. Press CTRL+D to quit!\n", THREAD_BURST);
+
     while(1) {
         int input_char;
 
@@ -100,10 +100,9 @@ int main(int argc, char* argv[]) {
             args->num_tasks = NUM_TASKS;
 
             if (pthread_create(&thread_handle, NULL, client, args)) {
-                printf("==> [DRIVER] FATAL ERROR: cannot create thread %d: %s\nExiting...\n", thread_ID, strerror(errno));
+                fprintf(stderr,"==> [DRIVER] FATAL ERROR: cannot create thread %d: %s\nExiting...\n", thread_ID, strerror(errno));
                 exit(1);
             }
-
 
             ++thread_ID;
 
@@ -113,9 +112,6 @@ int main(int argc, char* argv[]) {
 
         printf("==> [DRIVER] Press ENTER to spawn %d new threads. Press CTRL+D to quit!\n", THREAD_BURST);
     }
-    
-    
-
 
     printf("Exiting...\n");
 
