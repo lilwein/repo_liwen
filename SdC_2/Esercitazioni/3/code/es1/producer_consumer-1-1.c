@@ -10,7 +10,7 @@
 #define INITIAL_DEPOSIT     0
 #define MAX_TRANSACTION     1000
 #define NUM_CONSUMERS       1
-#define NUM_PRODUCERS       1
+#define NUM_PRODUCERS       4
 #define PRNG_SEED           0
 
 #define NUM_OPERATIONS      400
@@ -28,7 +28,7 @@ typedef struct {
     int numOps;
 } thread_args_t;
 
-sem_t sem_s, sem_n, sem_e;
+sem_t sem_n, sem_e;
 
 // shared data
 int transactions[BUFFER_SIZE];
@@ -60,13 +60,11 @@ void* performTransactions(void* x) {
         int ret;
         
         if(ret=sem_wait(&sem_e)) handle_error_en(ret, "Producer: error in sem_wait(&sem_e)");
-        if(ret=sem_wait(&sem_s)) handle_error_en(ret, "Producer: error in sem_wait(&sem_s)");
 
         // write the item and update write_index accordingly
         transactions[write_index] = currentTransaction;
         write_index = (write_index + 1) % BUFFER_SIZE;
 
-        if(ret=sem_post(&sem_s)) handle_error_en(ret, "Producer: error in sem_post(&sem_s)");
         if(ret=sem_post(&sem_n)) handle_error_en(ret, "Producer: error in sem_post(&sem_n)");
 
         args->numOps--;
@@ -85,7 +83,6 @@ void* processTransactions(void* x) {
         int ret;
         
         if(ret=sem_wait(&sem_n)) handle_error_en(ret, "Producer: error in sem_wait(&sem_n)");
-        if(ret=sem_wait(&sem_s)) handle_error_en(ret, "Producer: error in sem_wait(&sem_s)");
 
         // consume the item and update (shared) variable deposit
         deposit += transactions[read_index];
@@ -95,7 +92,6 @@ void* processTransactions(void* x) {
 			printf("After the last 100 transactions balance is now %d.\n", deposit);
 
 
-        if(ret=sem_post(&sem_s)) handle_error_en(ret, "Producer: error in sem_post(&sem_s)");
         if(ret=sem_post(&sem_e)) handle_error_en(ret, "Producer: error in sem_post(&sem_e)");
 
         args->numOps--;
@@ -121,9 +117,6 @@ int main(int argc, char* argv[]) {
     srand(PRNG_SEED);
 
     int ret;
-
-    ret = sem_init(&sem_s, 0, 1);
-    if(ret!=0) handle_error_en(ret, "Error in initializing sem_s");
 
     ret = sem_init(&sem_n, 0, 0);
     if(ret!=0) handle_error_en(ret, "Error in initializing sem_n");
@@ -166,7 +159,6 @@ int main(int argc, char* argv[]) {
 
     printf("Final value for deposit: %d\n", deposit);
 
-    sem_destroy(&sem_s);
     sem_destroy(&sem_n);
     sem_destroy(&sem_e);
 
