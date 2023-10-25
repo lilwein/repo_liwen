@@ -8,7 +8,7 @@
 
 /* Some constants */
 
-#define MAX_SLEEP       3   // used to simulate a work item (max length)
+#define MAX_SLEEP       30   // used to simulate a work item (max length)
 #define NUM_RESOURCES   3   // number of available special resources
 #define NUM_TASKS       3   // we define the number of work items per thread
 #define THREAD_BURST    5   // determines how many threads are spawned at the same time
@@ -152,7 +152,7 @@ int main(int argc, char* argv[]) {
     sem_destroy(&semaphore2);
 
     free(semaphore);
-    free(&semaphore2);
+    // free(&semaphore2);
 
     printf("[Driver] Done\n");
 
