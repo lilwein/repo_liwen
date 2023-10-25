@@ -167,8 +167,8 @@ int main(int argc, char* argv[]) {
     // destroy semaphores
     if (sem_destroy(&fill_sem)) handle_error("Fill sem destroy error");
     if (sem_destroy(&empty_sem)) handle_error("Empty sem destroy error");
-    if (sem_destroy(&read_sem)) handle_error("read sem destroy error");
-    if (sem_destroy(&write_sem)) handle_error("write sem destroy error");
+    // if (sem_destroy(&read_sem)) handle_error("read sem destroy error");
+    // if (sem_destroy(&write_sem)) handle_error("write sem destroy error");
 
     exit(EXIT_SUCCESS);
 }

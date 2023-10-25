@@ -57,19 +57,20 @@ void* performTransactions(void* x) {
     while (args->numOps > 0) {
         // produce the item
         int currentTransaction = performRandomTransaction();
-
-        sem_wait(&sem_e);
-        sem_wait(&sem_s);
+        int ret;
+        
+        if(ret=sem_wait(&sem_e)) handle_error_en(ret, "Producer: error in sem_wait(&sem_e)");
+        if(ret=sem_wait(&sem_s)) handle_error_en(ret, "Producer: error in sem_wait(&sem_s)");
 
         // write the item and update write_index accordingly
         transactions[write_index] = currentTransaction;
         write_index = (write_index + 1) % BUFFER_SIZE;
 
+        if(ret=sem_post(&sem_s)) handle_error_en(ret, "Producer: error in sem_post(&sem_s)");
+        if(ret=sem_post(&sem_n)) handle_error_en(ret, "Producer: error in sem_post(&sem_n)");
+
         args->numOps--;
         //printf("P %d\n", args->numOps);
-
-        sem_post(&sem_s);
-        sem_post(&sem_n);
     }
 
     free(args);
@@ -81,19 +82,21 @@ void* processTransactions(void* x) {
     printf("Starting consumer thread %d\n", args->threadId);
 
     while (args->numOps > 0) {
-
-        sem_wait(&sem_n);
-        sem_wait(&sem_s);
+        int ret;
+        
+        if(ret=sem_wait(&sem_n)) handle_error_en(ret, "Producer: error in sem_wait(&sem_n)");
+        if(ret=sem_wait(&sem_s)) handle_error_en(ret, "Producer: error in sem_wait(&sem_s)");
 
         // consume the item and update (shared) variable deposit
         deposit += transactions[read_index];
         read_index = (read_index + 1) % BUFFER_SIZE;
 
-        sem_post(&sem_s);
-        sem_post(&sem_e);
-
         if (read_index % 100 == 0)
 			printf("After the last 100 transactions balance is now %d.\n", deposit);
+
+
+        if(ret=sem_post(&sem_s)) handle_error_en(ret, "Producer: error in sem_post(&sem_s)");
+        if(ret=sem_post(&sem_e)) handle_error_en(ret, "Producer: error in sem_post(&sem_e)");
 
         args->numOps--;
         //printf("C %d\n", args->numOps);
