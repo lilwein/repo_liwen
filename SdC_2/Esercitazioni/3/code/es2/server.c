@@ -29,7 +29,7 @@ void cleanup() {
     if (sem_close(named_semaphore)) handle_error("sem_close error");
 
     if (sem_unlink(SEMAPHORE_NAME)) handle_error("sem_unlink error");
-    
+
     exit(0);
 }
 

@@ -28,12 +28,8 @@ void* client(void *arg_ptr) {
      * the semaphore and the desired flags (0 in this scenario).
      **/
 
-    /**
-     * TODO: EDIT AND IMPLEMENT THE OPERATION DESCRIBED ABOVE
-     **/
-
-
     sem_t* my_named_semaphore = NULL;
+    my_named_semaphore = sem_open(SEMAPHORE_NAME, 0);
 
     if (my_named_semaphore == SEM_FAILED) {
         snprintf(errorStr, sizeof(errorStr), "Could not open the named semaphore from thread %d", args->ID);
