@@ -57,7 +57,7 @@ int main(int argc, char* argv[]) {
     }
 
     /* Since a CTRL+C would kill the program, we rely on an auxiliary
-     * method to catch the interrupt and executed a cleanup code before
+     * method to catch the interrupt and execute a cleanup code before
      * terminating the program. */
     setQuitHandler(&cleanup);
 
@@ -74,8 +74,8 @@ int main(int argc, char* argv[]) {
         strftime((char*)timestamp, 9, "%H:%M:%S", localtime(&now));
 
         /** Get the current value for the semaphore and store it into a
-         * custom local variable (we pass its address through &). The
-         * value of the semaphore is the number of resources not in use. **/
+         * custom local variable (we pass its address using &). The
+         * value for the semaphore is the number of resources not in use. **/
         int current_value;
         ret = sem_getvalue(named_semaphore, &current_value);
 

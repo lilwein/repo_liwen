@@ -13,7 +13,7 @@
 #define NUM_RESOURCES       3
 #define SEMAPHORE_NAME      "/simple_scheduler"
 
-// we use a global variable to store the pointer to the named semaphore
+// we use a global variable to store a pointer to the named semaphore
 sem_t* named_semaphore;
 
 void cleanup() {
@@ -26,10 +26,10 @@ void cleanup() {
      * in the system after the server terminates!
      * **/
 
-    /**
-     * TODO: EDIT AND IMPLEMENT THE OPERATION DESCRIBED ABOVE
-     **/
+    if (sem_close(named_semaphore)) handle_error("sem_close error");
 
+    if (sem_unlink(SEMAPHORE_NAME)) handle_error("sem_unlink error");
+    
     exit(0);
 }
 
@@ -42,22 +42,20 @@ int main(int argc, char* argv[]) {
      * if it does not already exist. When used in an OR combination with
      * O_EXCL, the call fails if the semaphore already exists.
      *
-     * Mode 0600 means that only processes owned by the user that creates
+     * Mode 0600 means that only the processes owned by the user that creates
      * the semaphore can access it, with read & write (4+2) permissions.
      *
      * We initialize the semaphore with a value equal to NUM_RESOURCES.
      **/
 
+
+    /* If the semaphore was already created we need first to unlink it. In this case
+    * we don’t need to handle the error
+    **/
     
-    
-    /**
-     * TODO: EDIT AND IMPLEMENT THE OPERATION DESCRIBED ABOVE
-     **/
-    
-    // creation might fail if the named semaphore hasn't been deleted since its last creation
-    // first we have to unlink it
     sem_unlink(SEMAPHORE_NAME);
     named_semaphore = NULL;
+    named_semaphore = sem_open(SEMAPHORE_NAME, O_CREAT | O_EXCL, 0600, NUM_RESOURCES);
 
     if (named_semaphore == SEM_FAILED) {
         handle_error("Could not open the named semaphore");
@@ -88,6 +86,7 @@ int main(int argc, char* argv[]) {
 
         if (ret) {
             handle_error("Could not access the named semaphore");
+            exit(1);
         }
 
         printf("[%s] %d resources are available and %d are in use\n", timestamp, current_value, NUM_RESOURCES - current_value);
