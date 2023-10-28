@@ -19,6 +19,8 @@ struct shared_memory {
     int write_index;
 };
 
+#define SHARED_MEMORY_SIZE sizeof(struct shared_memory)
+
 //definizione shared memory
 struct shared_memory *myshm_ptr;
 int fd_shm;
@@ -29,10 +31,24 @@ sem_t *sem_empty, *sem_filled, *sem_cs;
 void initMemory() {
     /** COMPLETE THE FOLLOWING CODE BLOCK
      *
-     * Request the kernel to creare a shared memory, set its size to the size of
+     * Request the kernel to create a shared memory, set its size to the size of
      * struct shared_memory, and map the shared memory in the shared_mem_ptr variable.
      * Initialize the shared memory to 0.
      **/
+
+    shm_unlink(SH_MEM_NAME);
+
+    if( (fd_shm = shm_open(SH_MEM_NAME, O_CREAT | O_EXCL | O_RDWR, 0600)) == -1) handle_error("producer: error on shm_open()");
+    if(ftruncate(fd_shm, SHARED_MEMORY_SIZE) != 0) handle_error("producer: error on ftruncate()");
+
+    myshm_ptr = mmap(0, SHARED_MEMORY_SIZE, PROT_WRITE | PROT_READ, MAP_SHARED, fd_shm, 0);
+    if(myshm_ptr==MAP_FAILED) handle_error("producer: error on mmap()");
+
+    myshm_ptr->read_index = 0;
+    myshm_ptr->write_index = 0;
+    for(int i=0; i<BUFFER_SIZE; i++){
+        myshm_ptr->buf[i] = 0;
+    }
 
 }
 
@@ -42,6 +58,11 @@ void closeMemory() {
      * unmap the shared memory, unlink the shared memory and close its descriptor
      **/
 
+    if(munmap(myshm_ptr, SHARED_MEMORY_SIZE) != 0) handle_error("producer: error on munmap()");
+
+    if(close(fd_shm) != 0) handle_error("producer: error on close()");
+
+    if(shm_unlink(SH_MEM_NAME) != 0) handle_error("producer: error on shm_unlink()");
 }
 
 
@@ -104,6 +125,9 @@ void produce(int id, int numOps) {
          * Complete the following code:
          * write value in the buffer inside the shared memory and update the producer position
          */
+
+        myshm_ptr->buf[myshm_ptr->write_index] = value;
+        myshm_ptr->write_index ++;
 
 
         ret = sem_post(sem_cs);
