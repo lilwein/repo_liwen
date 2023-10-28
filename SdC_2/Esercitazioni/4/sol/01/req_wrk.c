@@ -45,7 +45,6 @@ int request() {
     * and wait it has terminated
     **/
 
-
   if (sem_post(sem_worker) != 0)
     handle_error("request: cannot unlock the worker semaphore");
 
@@ -65,7 +64,7 @@ int request() {
     **/
 
     if (munmap(data, SIZE) == -1)
-        handle_error("main: munmap");
+        handle_error("request: error on munmap()");
 
   return EXIT_SUCCESS;
 }
@@ -89,7 +88,7 @@ int work() {
   if (sem_wait(sem_worker) != 0)
     handle_error("worker: cannot lock the worker semaphore");
 
-  printf("worker: acquire initial data\n");
+	printf("worker: initial data acquired\n");
 
   printf("worker: update data\n");
   int i;
@@ -111,8 +110,9 @@ int work() {
    *
    * Release resources
    **/
+
   if (munmap(data, SIZE) == -1)
-      handle_error("main: munmap");
+    	handle_error("worker: error on munmap()");
 
   return EXIT_SUCCESS;
 }
@@ -125,6 +125,7 @@ int main(int argc, char **argv){
     *
     * Create and open the needed resources 
     **/
+
     sem_unlink(SEM_NAME_REQ);
     sem_unlink(SEM_NAME_WRK);
 
@@ -138,7 +139,8 @@ int main(int argc, char **argv){
 
       fd = shm_open(SHM_NAME, O_CREAT | O_EXCL | O_RDWR, 0600);
       if (fd < 0)
-        handle_error("main: error in shm_open");
+		handle_error("main: error in shm_open()");
+	if(ftruncate(fd, SIZE)!=0) handle_error("Error on ftruncate()");
 
       if(ftruncate(fd, SIZE) == -1)
            handle_error ("main: ftruncate");
