@@ -26,6 +26,7 @@
 #define CRITICAL_SECTION						"/critical_section"
 
 #define FILENAME	"accesses.log"
+#define SHM_SIZE sizeof(int)
 
 /*
  * data structure required by threads
@@ -86,42 +87,6 @@ void init_file(const char *filename) {
     printf("closed...file correctly initialized!!!\n");
 }
 
-void* thread_function(void* arg_ptr) {
-
-    thread_args_t *args = (thread_args_t*)arg_ptr;
-
-    // enter critical section
-    int ret = sem_wait(critical_section);
-    if(ret) {
-        handle_error("sem_wait failed");
-	}
-    printf("[Child#%d-Thread#%d] Entered into critical section!!!\n", args->child_id, args->thread_id);
-
-    // open file, write child identity and close file
-    int fd = open(FILENAME, O_WRONLY | O_APPEND);
-    if (fd < 0) handle_error("error while opening file");
-    printf("[Child#%d-Thread#%d] File %s opened in append mode!!!\n", args->child_id, args->thread_id, FILENAME);
-
-    write(fd, &(args->child_id), sizeof(int));
-    printf("[Child#%d-Thread#%d] %d appended to file %s opened in append mode!!!\n", args->child_id, args->thread_id, args->child_id, FILENAME);
-
-    close(fd);
-    printf("[Child#%d-Thread#%d] File %s closed!!!\n", args->child_id, args->thread_id, FILENAME);
-
-    // exit critical section
-    ret = sem_post(critical_section);
-	if(ret) {
-	    handle_error("sem_post failed");
-	}
-
-    printf("[Child#%d-Thread#%d] Exited from critical section!!!\n", args->child_id, args->thread_id);
-
-    // clean up
-    printf("[Child#%d-Thread#%d] Completed!!!\n", args->child_id, args->thread_id);
-    free(args);
-
-    pthread_exit(NULL);
-}
 
 void parseOutput() {
     // identify the child that accessed the file most times
@@ -158,11 +123,48 @@ void parseOutput() {
     free(access_stats);
 }
 
-void main_process() {
+void* thread_function(void* x) {
+
+    thread_args_t *args = (thread_args_t*)x;
+
+    // enter critical section
+    int ret = sem_wait(critical_section);
+    if(ret) {
+        handle_error("sem_wait failed");
+	}
+    printf("[Child#%d-Thread#%d] Entered into critical section!!!\n", args->child_id, args->thread_id);
+
+    // open file, write child identity and close file
+    int fd = open(FILENAME, O_WRONLY | O_APPEND);
+    if (fd < 0) handle_error("error while opening file");
+    printf("[Child#%d-Thread#%d] File %s opened in append mode!!!\n", args->child_id, args->thread_id, FILENAME);
+
+    write(fd, &(args->child_id), sizeof(int));
+    printf("[Child#%d-Thread#%d] %d appended to file %s opened in append mode!!!\n", args->child_id, args->thread_id, args->child_id, FILENAME);
+
+    close(fd);
+    printf("[Child#%d-Thread#%d] File %s closed!!!\n", args->child_id, args->thread_id, FILENAME);
+
+    // exit critical section
+    ret = sem_post(critical_section);
+	if(ret) {
+	    handle_error("sem_post failed");
+	}
+
+    printf("[Child#%d-Thread#%d] Exited from critical section!!!\n", args->child_id, args->thread_id);
+
+    // clean up
+    printf("[Child#%d-Thread#%d] Completed!!!\n", args->child_id, args->thread_id);
+    free(args);
+
+    pthread_exit(NULL);
+}
+
+void mainProcess() {
     // wait for all the children to start
     printf("[Main] %d children created, wait for all children to be ready...\n", n);
-    int i, ret;
-    for (i = 0; i < n; i++) {
+    int ret;
+    for(int i=0; i<n; i++) {
         ret = sem_wait(main_waits_for_children);
 		if(ret) {
 		    handle_error("sem_wait failed");
@@ -172,7 +174,7 @@ void main_process() {
 
     // notify children to start their activities
     printf("[Main] Notifying children to start their activities...\n");
-    for (i = 0; i < n; i++) {
+    for(int i=0; i<n; i++){
         ret = sem_post(children_wait_for_main);
 		if(ret) {
 		    handle_error("sem_post failed");
@@ -193,15 +195,9 @@ void main_process() {
     // wait for all the children to terminate
     printf("[Main] Waiting for all the children to terminate...\n");
     int child_status;
-    for (i = 0; i < n; i++) {
-        ret = wait(&child_status);
-		if(ret == -1) {
-		    handle_error("wait failed");
-		}
-        if (WEXITSTATUS(child_status)) {
-            fprintf(stderr, "ERROR: child died with code %d\n", WEXITSTATUS(child_status));
-            exit(EXIT_FAILURE);
-        }
+    for(int i=0; i<n; i++){
+        if ( (ret=wait(&child_status)) == -1) handle_error("main: error on wait()");
+        if(WEXITSTATUS(child_status)) handle_error_en(WEXITSTATUS(child_status), "main: child crashed");         
 	}
     printf("[Main] All the children have terminated!!!\n");
 
@@ -253,7 +249,7 @@ void main_process() {
     printf("done!!!\n");
 }
 
-void child_process(int child_id) {
+void childProcess(int child_id) {
     printf("[Child#%d] Child process initialized\n", child_id);
 
     // notify main process that I am ready
@@ -272,35 +268,31 @@ void child_process(int child_id) {
 	printf("[Child#%d] Notification to begin received!!!\n", child_id);
 
     unsigned int thread_id = 0;
-    pthread_t* thread_handlers = malloc(m * sizeof(pthread_t));
+    pthread_t* threads = malloc(m*sizeof(pthread_t));
 
     do {
-        int j;
+        int i;
 
         // reuse the buffer across iterations
-        memset(thread_handlers, 0, m * sizeof(pthread_t));
+        memset(threads, 0, m * sizeof(pthread_t));
 
         // create M threads
         printf("[Child#%d] Creating %d threads...\n", child_id, m);
-        for (j = 0; j < m; j++) {
-            thread_args_t *t_args = (thread_args_t *)malloc(sizeof(thread_args_t));
-            t_args->child_id = child_id;
-            t_args->thread_id = thread_id++;
-            ret = pthread_create(&thread_handlers[j], NULL, thread_function, t_args);
-            if(ret) {
-                handle_error_en(ret, "pthread_create failed");
-            }
+        for(i=0; i<m; i++){
+            thread_args_t *args = (thread_args_t*) malloc(sizeof(thread_args_t));
+            args->child_id = child_id;
+            args->thread_id = thread_id++;
 
+            ret = pthread_create(&threads[i], NULL, thread_function, args);
+            if(ret) handle_error_en(ret, "childProcess: error on pthread_create()");
         }
         printf("[Child#%d] %d threads created!!!\n", child_id, m);
 
         // wait for their completion
         printf("[Child#%d] Waiting for the end of the %d threads...\n", child_id, m);
-        for (j = 0; j < m; j++) {
-            ret = pthread_join(thread_handlers[j], NULL);
-			if(ret){
-			    handle_error_en(ret, "pthread_join failed");
-			}
+        for(i=0; i<m; i++){
+            ret = pthread_join(threads[i], NULL);
+            if(ret) handle_error_en(ret, "childProcess: error on pthread_join()");
 		}
         printf("[Child#%d] %d threads completed!!!\n", child_id, m);
 
@@ -311,16 +303,15 @@ void child_process(int child_id) {
         printf("[Child#%d] Go on with activities!!!\n", child_id);
     } while(1);
 
-    free(thread_handlers);
+    free(threads);
 
     printf("[Child#%d] Activities completed!!!\n", child_id);
 
-    if (munmap(data, sizeof(int))==-1)
-        handle_error("main unmap");
-     ret = close(shm_fd);
+    if( munmap(data, SHM_SIZE) == -1 ) handle_error("child: error on munmap()");
+    ret = close(shm_fd);
     
     if (ret == -1)
-        handle_error("main: cannot close the shared memory");
+        handle_error("child: cannot close the shared memory");
 
     ret = sem_close(main_waits_for_children);
 	if(ret) {
@@ -344,16 +335,13 @@ int main(int argc, char **argv) {
     if (argc > 2) m = atoi(argv[2]);
     if (argc > 3) t = atoi(argv[3]);
 
-    int i;
 
     shm_unlink(SHM_NAME);
 
     shm_fd = shm_open(SHM_NAME, O_CREAT | O_EXCL | O_RDWR, 0600);
-    if (shm_fd < 0)
-        handle_error("main: error in shm_open");
+    if(shm_fd<0) handle_error("main: error on shm_open()");
 
-    if(ftruncate(shm_fd, sizeof(int)) == -1)
-        handle_error ("main: ftruncate");
+    if( ftruncate(shm_fd, SHM_SIZE) == -1 ) handle_error("main: error on ftruncate()");
     if ((data = (int *) mmap(0, sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0))== MAP_FAILED)
         handle_error ("main: mmap");
     printf("request: mapped address: %p\n", data);
@@ -374,15 +362,15 @@ int main(int argc, char **argv) {
 
     // create the N children
     printf("[Main] Creating %d children...\n", n);
-    for (i = 0; i < n; i++) {
-        pid_t pid = fork(); // PID of child process
+    for(int i=0; i<n; i++){
+        pid_t pid = fork();
         if (pid == -1) {
             printf("Error creating child process #%d: %s\n", i, strerror(errno));
             exit(EXIT_FAILURE); // note that you have to kill manually any other process forked so far!
         } else if (pid == 0) {
             // child process, its id is i, exit from cycle
             printf("[Child#%d] Child process created, pid %d\n", i, getpid());
-            child_process(i);
+            childProcess(i);
             _exit(EXIT_SUCCESS);
         } else {
             // main process, go on creating all required child processes
@@ -390,7 +378,7 @@ int main(int argc, char **argv) {
     }
 
     /* MAIN PROCESS */
-    main_process();
+    mainProcess();
 
     exit(EXIT_SUCCESS);
 }

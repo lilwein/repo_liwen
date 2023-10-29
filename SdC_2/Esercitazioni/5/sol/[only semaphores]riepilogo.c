@@ -80,6 +80,42 @@ void init_file(const char *filename) {
     printf("closed...file correctly initialized!!!\n");
 }
 
+
+void parseOutput() {
+    // identify the child that accessed the file most times
+    int* access_stats = calloc(n, sizeof(int)); // initialized with zeros
+    printf("[Main] Opening file %s in read-only mode...", FILENAME);
+	fflush(stdout);
+    int fd = open(FILENAME, O_RDONLY);
+    if (fd < 0) handle_error("error while opening output file");
+    printf("ok, reading it and updating access stats...");
+	fflush(stdout);
+
+    size_t read_bytes;
+    int index;
+    do {
+        read_bytes = read(fd, &index, sizeof(int));
+        if (read_bytes > 0)
+            access_stats[index]++;
+    } while(read_bytes > 0);
+    printf("ok, closing it...");
+	fflush(stdout);
+
+    close(fd);
+    printf("closed!!!\n");
+
+    int max_child_id = -1, max_accesses = -1, i;
+    for (i = 0; i < n; i++) {
+        printf("[Main] Child %d accessed file %s %d times\n", i, FILENAME, access_stats[i]);
+        if (access_stats[i] > max_accesses) {
+            max_accesses = access_stats[i];
+            max_child_id = i;
+        }
+    }
+    printf("[Main] ===> The process that accessed the file most often is %d (%d accesses)\n", max_child_id, max_accesses);
+    free(access_stats);
+}
+
 void* thread_function(void* arg_ptr) {
 
     thread_args_t *args = (thread_args_t*)arg_ptr;
@@ -115,41 +151,6 @@ void* thread_function(void* arg_ptr) {
     free(args);
 
     pthread_exit(NULL);
-}
-
-void parseOutput() {
-    // identify the child that accessed the file most times
-    int* access_stats = calloc(n, sizeof(int)); // initialized with zeros
-    printf("[Main] Opening file %s in read-only mode...", FILENAME);
-	fflush(stdout);
-    int fd = open(FILENAME, O_RDONLY);
-    if (fd < 0) handle_error("error while opening output file");
-    printf("ok, reading it and updating access stats...");
-	fflush(stdout);
-
-    size_t read_bytes;
-    int index;
-    do {
-        read_bytes = read(fd, &index, sizeof(int));
-        if (read_bytes > 0)
-            access_stats[index]++;
-    } while(read_bytes > 0);
-    printf("ok, closing it...");
-	fflush(stdout);
-
-    close(fd);
-    printf("closed!!!\n");
-
-    int max_child_id = -1, max_accesses = -1, i;
-    for (i = 0; i < n; i++) {
-        printf("[Main] Child %d accessed file %s %d times\n", i, FILENAME, access_stats[i]);
-        if (access_stats[i] > max_accesses) {
-            max_accesses = access_stats[i];
-            max_child_id = i;
-        }
-    }
-    printf("[Main] ===> The process that accessed the file most often is %d (%d accesses)\n", max_child_id, max_accesses);
-    free(access_stats);
 }
 
 void main_process() {
