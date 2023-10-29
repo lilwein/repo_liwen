@@ -1,4 +1,4 @@
-CFLAGS=-m32 -g -Wall
+CFLAGS= -g -Wall
 all: riepilogo
 
 riepilogo: riepilogo.c common.h
