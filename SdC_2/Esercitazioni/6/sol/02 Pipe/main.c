@@ -9,6 +9,7 @@
 #define WRITE_MUTEX    "/write_mutex"
 #define READ_MUTEX     "/read_mutex"
 #define MSG_COUNT 12
+#define PIPE_BUF 4096
 #define MSG_ELEMS (64 * PIPE_BUF)
 
 int pipefd[2];
@@ -219,6 +220,7 @@ int main(int argc, char* argv[]) {
 
     ret = sem_close(read_mutex);
     if(ret) handle_error("Error closing read mutex");
+    
     for (i = 0; i < WRITERS_COUNT; i++) {
         pid = fork();
         if (pid == -1) handle_error("error creating reader");

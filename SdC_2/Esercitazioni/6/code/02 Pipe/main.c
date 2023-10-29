@@ -9,6 +9,7 @@
 #define WRITE_MUTEX    "/write_mutex"
 #define READ_MUTEX     "/read_mutex"
 #define MSG_COUNT 12
+#define PIPE_BUF 4096
 #define MSG_ELEMS (64 * PIPE_BUF)
 
 int pipefd[2];
@@ -26,10 +27,25 @@ int write_to_pipe(int fd, const void *data, size_t data_len) {
      * - restituire il numero di bytes scritti
      **/
      
-     
-     
-     
+    int ret;
+    int left_bytes = data_len;
+    int written_bytes = 0;
 
+    while ( left_bytes > 0 ){
+        ret = write(fd, data + written_bytes, left_bytes);
+
+        if(ret==-1){
+            if(errno==EINTR) continue;
+            handle_error_en(errno, "writer: error on read");
+        }
+
+        left_bytes -= ret;
+        written_bytes += ret;
+    }
+    
+    if ( written_bytes != data_len ) handle_error("writter: not all data_len bytes has been written ");
+
+    return written_bytes;
 }
 
 int read_from_pipe(int fd, void *data, size_t data_len) {
@@ -46,11 +62,27 @@ int read_from_pipe(int fd, void *data, size_t data_len) {
      * - assicurarsi che tutti i 'data_len' bytes siano stati letti
      * - restituire il numero di bytes letti
      **/
-     
-     
-     
-     
+    
+    int ret;
+    int left_bytes = data_len;
+    int read_bytes = 0;
 
+    while ( left_bytes > 0 ){
+        ret = read(fd, data + read_bytes, left_bytes);
+
+        if(ret==0) break;
+        if(ret==-1){
+            if(errno==EINTR) continue;
+            handle_error_en(errno, "reader: error on read");
+        }
+
+        left_bytes -= ret;
+        read_bytes += ret;
+    }
+    
+    if ( read_bytes != data_len ) handle_error("reader: not all data_len bytes has been read ");
+
+    return read_bytes;
 }
 
 /**
@@ -93,7 +125,8 @@ void reader(int reader_id, sem_t* read_mutex) {
      * - gestire eventuali errori
      **/
      
-     
+    ret = close(pipefd[1]);
+    if ( ret==-1 ) handle_error("reader: error on close()");
      
      
     
@@ -123,12 +156,8 @@ void reader(int reader_id, sem_t* read_mutex) {
      * - gestire eventuali errori
      **/
      
-     
-     
-     
-     
     ret = close(pipefd[0]);
-    if(ret) handle_error("error closing pipe");
+    if ( ret==-1 ) handle_error("writer: error on close()");
 
 }
 
@@ -145,7 +174,8 @@ void writer(int writer_id, sem_t* write_mutex) {
      * - gestire eventuali errori
      **/
      
-     
+    ret = close(pipefd[0]);
+    if ( ret==-1 ) handle_error("writer: error on close()");
      
      
     for (i = 0 ; i < MSG_COUNT/WRITERS_COUNT; i++) {
@@ -172,7 +202,8 @@ void writer(int writer_id, sem_t* write_mutex) {
      * - gestire eventuali errori
      **/
      
-     
+    ret = close(pipefd[1]);
+    if ( ret==-1 ) handle_error("reader: error on close()");
      
      
 
@@ -198,7 +229,8 @@ int main(int argc, char* argv[]) {
      * - gestire eventuali errori
      **/
      
-     
+    ret = pipe(pipefd);
+    if (ret==-1) handle_error_en(ret, "main: error on pipe()");
      
      
     for (i = 0; i < READERS_COUNT; i++) {
@@ -225,11 +257,16 @@ int main(int argc, char* argv[]) {
     ret = sem_close(write_mutex);
     if(ret) handle_error("Error closing write mutex");
 
+    ret = close(pipefd[0]);
+    if(ret) handle_error("error closing pipe");
+    ret = close(pipefd[1]);
+    if(ret) handle_error("error closing pipe");
+
     // shutdown phase
     for (i = 0 ; i < READERS_COUNT + WRITERS_COUNT; i++) {
         int status;
         ret = wait(&status);
-        if(ret == 1) handle_error("error waiting for a child to terminate");
+        if(ret == -1) handle_error("error waiting for a child to terminate");
         if (WEXITSTATUS(status)) handle_error("child process died unexpectedly");
     }
 
