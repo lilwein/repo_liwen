@@ -33,6 +33,7 @@ static inline void performCopyBetweenDescriptors(int src_fd, int dest_fd, int bl
              *
              * In a correct solution you have to deal explicitly with
              * the two cases described above. */
+
             int ret = read(src_fd, buf + read_bytes, bytes_left);
 
             // no more bytes left to read!
@@ -53,6 +54,7 @@ static inline void performCopyBetweenDescriptors(int src_fd, int dest_fd, int bl
              * bytes_left bytes immediately available for reading */
             bytes_left -= ret;
             read_bytes += ret;
+
         }
 
         // no more bytes left to write!
@@ -77,8 +79,8 @@ static inline void performCopyBetweenDescriptors(int src_fd, int dest_fd, int bl
              *
              * In a correct solution you have to deal explicitly with
              * the two cases described above. */
-            int ret = write(dest_fd, buf + written_bytes, bytes_left);
 
+            int ret = write(dest_fd, buf + written_bytes, bytes_left);
 
             if (ret == -1){
                 if(errno == EINTR) // write() interrupted by a signal
@@ -89,6 +91,7 @@ static inline void performCopyBetweenDescriptors(int src_fd, int dest_fd, int bl
 
             bytes_left -= ret;
             written_bytes += ret;
+
         }
     }
 

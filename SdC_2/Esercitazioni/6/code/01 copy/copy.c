@@ -33,6 +33,21 @@ static inline void performCopyBetweenDescriptors(int src_fd, int dest_fd, int bl
              *
              * In a correct solution you have to deal explicitly with
              * the two cases described above. */
+
+            int ret = read(src_fd, buf + read_bytes, bytes_left);
+
+            if (ret == 0) break;
+
+            if (ret == -1){
+                if(errno == EINTR){
+                    continue;
+                }
+                handle_error("Cannot read from source file");
+            }
+
+            bytes_left -= ret;
+            read_bytes += ret;
+            
         }
 
         // no more bytes left to write!
@@ -58,6 +73,18 @@ static inline void performCopyBetweenDescriptors(int src_fd, int dest_fd, int bl
              * In a correct solution you have to deal explicitly with
              * the two cases described above. */
             
+            int ret = write(dest_fd, buf + written_bytes, bytes_left);
+
+            if (ret == -1){
+                if (errno == EINTR){
+                    continue;
+                }
+                handle_error("Cannot write to destination file");
+            }
+
+            bytes_left -= ret;
+            written_bytes += ret;
+
         }
     }
 
@@ -80,7 +107,7 @@ int main(int argc, char* argv[]) {
 
     // create descriptors for source and destination files
     src_fd = open(argv[1], O_RDONLY);
-    if (fd<0) handle_error("Could not open source file");
+    if (src_fd<0) handle_error("Could not open source file");
 
     // for simplicity we use rw-r--r-- permissions for the destination file
     dest_fd = open(argv[2], O_WRONLY | O_CREAT | O_EXCL, 0644);
