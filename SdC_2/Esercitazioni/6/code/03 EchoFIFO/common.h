@@ -18,5 +18,8 @@
 #define CLNT_FIFO_NAME  "fifo_client"
 #define ECHO_FIFO_NAME  "fifo_echo"
 
+int readOneByOne(int fd, char* buf, char separator);
+void writeMsg(int fd, char* buf, int size);
+
 
 #endif

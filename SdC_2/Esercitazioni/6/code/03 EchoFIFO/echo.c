@@ -19,6 +19,9 @@ int main(int argc, char* argv[]) {
     char* quit_command = QUIT_COMMAND;
     size_t quit_command_len = strlen(quit_command);
 
+    if ( unlink(ECHO_FIFO_NAME) == -1 ) handle_error("Error on unlink()");
+    if ( unlink(CLNT_FIFO_NAME) == -1 ) handle_error("Error on unlink()");
+
     // Create the two FIFOs
     ret = mkfifo(ECHO_FIFO_NAME, 0666);
     if(ret) handle_error("Cannot create Echo FIFO");
@@ -35,6 +38,12 @@ int main(int argc, char* argv[]) {
      *   and the Client program does it through 'client_fifo'
      **/
 
+    echo_fifo = open(ECHO_FIFO_NAME, O_WRONLY);
+    if(echo_fifo<1) handle_error("echo: error on open(ECHO_FIFO_NAME)");
+
+    client_fifo = open(CLNT_FIFO_NAME, O_RDONLY);
+    if(client_fifo<1) handle_error("echo: error on open(CLNT_FIFO_NAME)");
+
     // send welcome message
     sprintf(buf, "Hi! I'm an Echo process based on FIFOs. I will send you back through a FIFO whatever"
             " you send me through the other FIFO, and I will stop and exit when you send me %s.\n", quit_command);
@@ -47,6 +56,9 @@ int main(int argc, char* argv[]) {
      * - make sure that all the bytes have been written: use a while
      *   cycle in the implementation as we did for file descriptors!
      **/
+
+    writeMsg(echo_fifo, buf, bytes_left);
+    bytes_sent = bytes_left;
 
     while (1) {
         /** INSERT CODE HERE TO READ THE MESSAGE THROUGH THE CLIENT FIFO
@@ -61,6 +73,9 @@ int main(int argc, char* argv[]) {
          * - reading 0 bytes means that the other process has closed
          *   the FIFO unexpectedly: this is an error to deal with!
          **/
+
+        memset(buf, 0, 1024);
+        bytes_read = readOneByOne(client_fifo, buf, '\n');
 
         if (DEBUG) {
             buf[bytes_read] = '\0';
@@ -80,6 +95,10 @@ int main(int argc, char* argv[]) {
          * - make sure that all the bytes have been written: use a while
          *   cycle in the implementation as we did for file descriptors!
          **/
+
+        writeMsg(echo_fifo, buf, bytes_read);
+        bytes_sent = bytes_left;
+
     }
 
     // close the descriptors

@@ -11,12 +11,14 @@ int f(int* reg, int old, int new){
 
 int main(int argc, char const *argv[]){
     
-    int bolt=0;
-    printf("bolt=%d\t--->\t",bolt);
-    int res = f(&bolt, 0, 1);
+    // int bolt=0;
+    // printf("bolt=%d\t--->\t",bolt);
+    // int res = f(&bolt, 0, 1);
 
-    printf("res=%d\tbolt=%d\n",res,bolt);
+    // printf("res=%d\tbolt=%d\n",res,bolt);
     
+    char *a = "co\n";
+    printf("\n%d\n", strlen(a));
 
     return 0;
 }

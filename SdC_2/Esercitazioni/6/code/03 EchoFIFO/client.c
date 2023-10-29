@@ -29,6 +29,12 @@ int main(int argc, char* argv[]) {
      *   and the Client program does it through 'client_fifo'
      **/
 
+    echo_fifo = open(ECHO_FIFO_NAME, O_RDONLY);
+    if (echo_fifo == -1) handle_error("client: error on open(ECHO_FIFO_NAME)");
+
+    client_fifo = open(CLNT_FIFO_NAME, O_WRONLY);
+    if (client_fifo == -1) handle_error("client: error on open(CLNT_FIFO_NAME)");
+
     // display welcome message received from the Echo process
     /** INSERT CODE HERE TO READ THE MESSAGE THROUGH THE ECHO FIFO
      *
@@ -43,6 +49,9 @@ int main(int argc, char* argv[]) {
      * - reading 0 bytes means that the other process has closed
      *   the FIFO unexpectedly: this is an error to deal with!
      **/
+
+    memset(buf, 0, 1024);
+    bytes_read = readOneByOne(echo_fifo, buf, '\n');
 
     buf[bytes_read] = '\0';
     printf("%s", buf);
@@ -68,6 +77,9 @@ int main(int argc, char* argv[]) {
          * - store the total number of bytes sent in 'bytes_sent'
          **/
 
+        writeMsg(client_fifo, buf, bytes_left);
+        bytes_sent = bytes_left;
+
         /* After a quit command we won't receive data from the server
          * anymore, thus we must exit the main loop. */
         if (bytes_sent - 1 == quit_command_len && !memcmp(buf, quit_command, quit_command_len)) break;
@@ -85,6 +97,10 @@ int main(int argc, char* argv[]) {
          * - reading 0 bytes means that the other process has closed
          *   the FIFO unexpectedly: this is an error to deal with!
          **/
+
+        memset(buf, 0, 1024);
+        bytes_read = readOneByOne(echo_fifo, buf, '\n');
+
         buf[bytes_read] = '\0';
         printf("Server response: %s\n", buf);
     }

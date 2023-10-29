@@ -21,6 +21,19 @@ int readOneByOne(int fd, char* buf, char separator) {
      *   dealt with!
      **/
 
+    int bytes_read = 0;
+
+    do {       
+        ret = read(fd, buf + bytes_read, 1);
+        if(ret==-1){
+            if(errno==EINTR) continue;
+            handle_error("error on read()");
+        }
+        if(ret==0) handle_error("Process closed FIFO unexpectedly");
+
+    } while ( buf[bytes_read++] != separator ) ;
+
+    return bytes_read;
 }
 
 void writeMsg(int fd, char* buf, int size) {
@@ -34,4 +47,14 @@ void writeMsg(int fd, char* buf, int size) {
      *   cycle in the implementation as we did for file descriptors!
      **/
 
+    int bytes_written = 0;
+
+    while ( bytes_written < size ) {       
+        ret = write(fd, buf + bytes_written, size);
+        if(ret==-1){
+            if(errno==EINTR) continue;
+            handle_error("error on write()");
+        }
+        bytes_written += ret;
+    }
 }
