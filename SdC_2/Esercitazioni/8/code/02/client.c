@@ -10,7 +10,8 @@
 #include "common.h"
 
 int main(int argc, char* argv[]) {
-    int ret;
+    int ret,bytes_sent,recv_bytes;
+
 
     // variables for handling a socket
     int socket_desc;
@@ -23,9 +24,11 @@ int main(int argc, char* argv[]) {
      * - tipo SOCK_DGRAM
      */
 
+    socket_desc = socket(AF_INET, SOCK_DGRAM, 0);
+    if(socket_desc<0) handle_error("client: error on socket()");
 
-
-
+    if (DEBUG) fprintf(stderr, "Socket created...\n");
+    
     /** [SOLUTION]
      *  TODO: set up parameters for the connection and initiate a connection to the server
      *
@@ -36,6 +39,11 @@ int main(int argc, char* argv[]) {
      * - - server_addr.sin_port (using htons() method)
      */
     //
+
+    server_addr.sin_addr.s_addr = inet_addr(SERVER_ADDRESS);
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(SERVER_PORT);
+
 
     char buf[1024];
     size_t buf_len = sizeof(buf);
@@ -70,6 +78,16 @@ int main(int argc, char* argv[]) {
          * - message size IS NOT buf size
          */
 
+        bytes_sent = 0;
+        while ( bytes_sent == 0 ){
+            ret = sendto(socket_desc, buf, msg_len, 0, (struct sockaddr *) &server_addr, sizeof(struct sockaddr_in));
+            if(ret==-1){
+                if(errno==EINTR) continue;
+                handle_error("server: error on sendto()");
+            }
+            bytes_sent += ret;
+        }
+
         /* After a quit command we won't receive any more data from
          * the server, thus we must exit the main loop. */
 
@@ -85,6 +103,12 @@ int main(int argc, char* argv[]) {
          * - exit from the cycle when there is nothing left to receive
          */
 
+        if (msg_len == quit_command_len && !memcmp(buf, quit_command, quit_command_len)){
+
+            if (DEBUG) fprintf(stderr, "Sent QUIT command ...\n");
+             break;
+        }
+
         /** TODO: read message from server
          * Suggestions:
          * - recvfrom() with flags = 0 is equivalent to read() from a descriptor
@@ -94,7 +118,17 @@ int main(int argc, char* argv[]) {
          * - don't deal with partially sent messages in UDP, but deal with other errors
          */
 
+        recv_bytes = 0;
+    	do {
+            ret = recvfrom(socket_desc, buf, buf_len, 0, NULL, NULL);
+            if (ret == -1 && errno == EINTR) continue;
+            if (ret == -1) handle_error("Cannot read from the socket");
+	        if (ret == 0) break;
+	        recv_bytes = ret;
 
+	    } while ( recv_bytes<=0 );
+
+        if (DEBUG) fprintf(stderr, "Received answer of %d bytes...\n",recv_bytes);
 
 
 
@@ -104,6 +138,11 @@ int main(int argc, char* argv[]) {
 
     /** TODO: close socket and release unused resources
      */
+
+    ret = close(socket_desc);
+    if (ret < 0) handle_error("Cannot close the socket");
+
+    if (DEBUG) fprintf(stderr, "Socket closed...\n");
 
     if (DEBUG) fprintf(stderr, "Exiting...\n");
 
