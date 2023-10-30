@@ -55,7 +55,7 @@ int readValue(int * value) {
      **/
     int bytes_read = 0;
 
-    do {
+    while(bytes_read != sizeof(int)) {
         ret = read(fifo, value, sizeof(int));
 
         if(ret==-1){
@@ -65,7 +65,7 @@ int readValue(int * value) {
         if(ret==0) handle_error("consumer: producer closed FIFO unexpectedly. Exiting...");
         if (ret < sizeof(int)) handle_error_en(ret, "partial read from FIFO");
         bytes_read += ret;
-    } while(bytes_read != sizeof(int));
+    } 
 
     return bytes_read;
 }
