@@ -36,6 +36,16 @@ void* connection_handler(int socket_desc) {
      * - deal with partially sent messages (message size is not buffer size)
      */
 
+    bytes_sent = 0;
+    while ( bytes_sent < msg_len ){
+        ret = send(socket_desc, buf + bytes_sent, msg_len - bytes_sent, 0);
+        if(ret==-1){
+            if(errno==EINTR) continue;
+            handle_error("server: error on send()");
+        }
+        bytes_sent += ret;
+    }
+
     if (DEBUG) fprintf(stderr, "Welcome message <<%s>> has been sent\n",buf);
 
     // echo loop
@@ -52,6 +62,19 @@ void* connection_handler(int socket_desc) {
          * - deal with partially sent messages (we do not know the message size)
          */
 
+        memset(buf,0,buf_len);
+
+        recv_bytes = 0;
+        do {
+            ret = recv(socket_desc, buf + recv_bytes, 1, 0);
+            if(ret==-1){
+                if(errno==EINTR) continue;
+                handle_error("server: error on recv()");
+            }
+            if(ret==0) handle_error("server: client closed connection. Exiting...");;
+            recv_bytes ++;
+        } while ( buf[recv_bytes-1] != '\n' ) ;
+
         if (DEBUG) fprintf(stderr, "Received command of %d bytes...\n",recv_bytes);
 
         /**
@@ -66,6 +89,13 @@ void* connection_handler(int socket_desc) {
          *   memcmp(const void *ptr1, const void *ptr2, size_t num)
          * - exit from the cycle when there is nothing to send back
          */
+        
+        if ( recv_bytes == quit_command_len ){
+            if ( !memcmp(buf, quit_command, recv_bytes) ) {
+                if (DEBUG) fprintf(stderr, "Received QUIT command\n");
+                break;
+            }
+        }
 
         // ...or I have to send the message back
         /**
@@ -78,6 +108,16 @@ void* connection_handler(int socket_desc) {
          * - message size IS NOT buf size
          */
 
+        bytes_sent = 0;
+        while ( bytes_sent < recv_bytes ){
+            ret = send(socket_desc, buf + bytes_sent, recv_bytes - bytes_sent, 0);
+            if(ret==-1){
+                if(errno==EINTR) continue;
+                handle_error("server: error on send()");
+            }
+            bytes_sent += ret;
+        }
+
         if (DEBUG) fprintf(stderr, "Sent message of %d bytes back...\n", bytes_sent);
     }
 
@@ -85,6 +125,9 @@ void* connection_handler(int socket_desc) {
     /**
      *  TODO: close socket and release unused resources
      */
+
+    ret = close(socket_desc);
+    if(ret==-1) handle_error("server: error on close()");
 
     if (DEBUG) fprintf(stderr, "Socket closed...\n");
 
@@ -109,6 +152,9 @@ int main(int argc, char* argv[]) {
      * - tipo SOCK_STREAM
      */
 
+    socket_desc = socket(AF_INET, SOCK_STREAM, 0);
+    if( socket_desc < 0 ) handle_error("server: error on socket()");
+
     if (DEBUG) fprintf(stderr, "Socket created...\n");
 
     /* We enable SO_REUSEADDR to quickly restart our server after a crash:
@@ -131,6 +177,13 @@ int main(int argc, char* argv[]) {
      * - - it requires as second field struct sockaddr* addr, but our address is a struct sockaddr_in, hence we must cast it (struct sockaddr*) &server_addr
      */
 
+    server_addr.sin_addr.s_addr = INADDR_ANY;
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(SERVER_PORT);
+
+    ret = bind(socket_desc, (struct sockaddr *) &server_addr, sockaddr_len);
+    if(ret==-1) handle_error("server: error on bind()");
+
     if (DEBUG) fprintf(stderr, "Binded address to socket...\n");
 
     /**
@@ -139,6 +192,9 @@ int main(int argc, char* argv[]) {
      * Suggestions:
      * - set the number of pending connections to as MAX_CONN_QUEUE
      */
+
+    ret = listen(socket_desc, MAX_CONN_QUEUE);
+    if(ret==-1) handle_error("server: error on listen()");
 
     if (DEBUG) fprintf(stderr, "Socket is listening...\n");
 
@@ -159,6 +215,9 @@ int main(int argc, char* argv[]) {
          *   is recommended)
          * - check the return value of accept() for errors!
          */
+
+        client_desc = accept(socket_desc, (struct sockaddr *) &client_addr, (socklen_t *) &sockaddr_len);
+        if( client_desc < 0 ) handle_error("server: error on accept()");
 
         if (DEBUG) fprintf(stderr, "Incoming connection accepted...\n");
 

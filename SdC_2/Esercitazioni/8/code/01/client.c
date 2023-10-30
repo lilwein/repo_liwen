@@ -24,6 +24,9 @@ int main(int argc, char* argv[]) {
      * - tipo SOCK_STREAM
      */
 
+    socket_desc = socket(AF_INET, SOCK_STREAM, 0);
+    if(socket_desc<0) handle_error("client: error on socket()");
+
     if (DEBUG) fprintf(stderr, "Socket created...\n");
 
     /**
@@ -39,6 +42,13 @@ int main(int argc, char* argv[]) {
      * - - it requires as second field struct sockaddr* addr, but our address is a struct sockaddr_in, hence we must cast it (struct sockaddr*) &server_addr
      */
 
+    server_addr.sin_addr.s_addr = inet_addr(SERVER_ADDRESS);
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(SERVER_PORT);
+
+    ret = connect(socket_desc, (struct sockaddr *) &server_addr, sizeof(struct sockaddr_in));
+    if (ret<0) handle_error("client: error on connect()");
+    
     if (DEBUG) fprintf(stderr, "Connection established!\n");
 
     char buf[1024];
@@ -59,6 +69,18 @@ int main(int argc, char* argv[]) {
      * - - it requires as second field struct sockaddr* addr, but our address is a struct sockaddr_in, hence we must cast it (struct sockaddr*) &server_addr
      */
 
+    recv_bytes = 0;
+    do {
+        ret = recv(socket_desc, buf + recv_bytes, 1, 0);
+        if(ret==-1){
+            if(errno==EINTR) continue;
+            handle_error("client: error on recv()");
+        }
+        if(ret==0) handle_error("client: server closed connection. Exiting...");;
+        recv_bytes ++;
+    } while ( buf[recv_bytes-1] != '\n' ) ;
+    printf("%s", buf);
+
     if (DEBUG) fprintf(stderr, "Received message of %d bytes...\n",recv_bytes);
 
 
@@ -73,6 +95,7 @@ int main(int argc, char* argv[]) {
          *
          * fgets() reads up to sizeof(buf)-1 bytes and on success
          * returns the first argument passed to it. */
+        memset(buf,0,buf_len);
         if (fgets(buf, sizeof(buf), stdin) != (char*)buf) {
             fprintf(stderr, "Error while reading from stdin, exiting...\n");
             exit(EXIT_FAILURE);
@@ -91,6 +114,16 @@ int main(int argc, char* argv[]) {
          * - message size IS NOT buf size
          */
 
+        bytes_sent = 0;
+        while ( bytes_sent < msg_len ){
+            ret = send(socket_desc, buf + bytes_sent, msg_len - bytes_sent, 0);
+            if(ret==-1){
+                if(errno==EINTR) continue;
+                handle_error("client: error on send()");
+            }
+            bytes_sent += ret;
+        }
+
         if (DEBUG) fprintf(stderr, "Sent message of %d bytes...\n", bytes_sent);
 
 
@@ -107,6 +140,13 @@ int main(int argc, char* argv[]) {
          * - exit from the cycle when there is nothing left to receive
          */
 
+        if ( bytes_sent == quit_command_len ){
+            if ( !memcmp(buf, quit_command, bytes_sent) ) {
+                if (DEBUG) fprintf(stderr, "Sent QUIT command\n");
+                break;
+            }
+        }
+
         /**
          *  TODO: read message from server
          * Suggestions:
@@ -117,6 +157,17 @@ int main(int argc, char* argv[]) {
          * - deal with partially sent messages (we do not know the message size)
          */
 
+        recv_bytes = 0;
+        do {
+            ret = recv(socket_desc, buf + recv_bytes, 1, 0);
+            if(ret==-1){
+                if(errno==EINTR) continue;
+                handle_error("client: error on recv()");
+            }
+            if(ret==0) handle_error("client: server closed connection. Exiting...");;
+            recv_bytes ++;
+        } while ( buf[recv_bytes-1] != '\n' ) ;
+
         if (DEBUG) fprintf(stderr, "Received answer of %d bytes...\n",recv_bytes);
 
         printf("Server response: %s\n", buf);
@@ -126,6 +177,9 @@ int main(int argc, char* argv[]) {
     /**
      *  TODO: close socket and release unused resources
      */
+
+    ret = close(socket_desc);
+    if(ret==-1) handle_error("client: error on close()");
 
     if (DEBUG) fprintf(stderr, "Socket closed...\n");
 
