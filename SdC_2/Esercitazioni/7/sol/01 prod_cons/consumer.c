@@ -66,8 +66,10 @@ int readValue(int * value) {
      *   problem between multiple readers. I suggest to abort
      **/
     int bytes_read = 0;
+
     do {
         ret = read(fifo, value, sizeof(int));
+
         if (ret == -1 && errno == EINTR) continue;
         if (ret == -1) handle_error("Cannot read from FIFO");
         if (ret ==  0) handle_error("Process has closed the FIFO unexpectedly! Exiting...\n");
@@ -76,6 +78,7 @@ int readValue(int * value) {
         // byte that has just been written, then we do the increment
         bytes_read += ret;
     } while(bytes_read != sizeof(int));
+    
     return bytes_read;
 }
 

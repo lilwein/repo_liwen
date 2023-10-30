@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <string.h>
 #include <semaphore.h>
 #include <stdio.h>
@@ -21,6 +22,13 @@ void initFIFO() {
      * Request the kernel to create a FIFO and open it
      **/
 
+    unlink(FIFO_NAME);
+
+    if ( mkfifo(FIFO_NAME, 0666) == -1 ) handle_error("producer: error on mkfifo()");
+    fifo = open(FIFO_NAME, O_WRONLY);
+    if(fifo<0) handle_error("producer: error on open()");
+
+    fcntl(fifo, F_SETPIPE_SZ, 10*sizeof(int));
 }
 
 static void closeFIFO() {
@@ -30,7 +38,7 @@ static void closeFIFO() {
      * - Close the fifo
      * */
 
-
+    if ( close(fifo) == -1 ) handle_error("producer: error on close()");
 }
     
 
@@ -60,6 +68,19 @@ int writeValue(int value) {
      * - make sure that all the bytes have been written: use a while
      *   cycle in the implementation as we did for file descriptors!
      **/
+
+    int bytes_sent = 0;
+    while (bytes_sent != sizeof(int)) {
+        ret = write(fifo, &value, sizeof(int));
+
+        if(ret==-1){
+            if(errno==EINTR) continue;;
+            handle_error("producer: error on write()");
+        }
+        if(ret!=sizeof(int)) handle_error_en(ret, "consumer: partial write to FIFO");
+
+        bytes_sent = ret;
+    }
     return bytes_sent;
 }
 

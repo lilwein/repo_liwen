@@ -21,8 +21,8 @@ void openFIFO() {
      * Open the FIFO
      **/
 
- 
-
+    fifo = open(FIFO_NAME, O_RDONLY);
+    if(fifo<0) handle_error("consumer: error on open()");
 }
 
 static void closeFIFO() {
@@ -33,6 +33,8 @@ static void closeFIFO() {
      * - Destroy the fifo
      * */
 
+    if ( close(fifo) == -1 ) handle_error("consumer: error on close()");
+    if ( unlink(FIFO_NAME) == -1 ) handle_error("consumer: error on unlink()");
 }
 
 int readValue(int * value) {
@@ -52,6 +54,18 @@ int readValue(int * value) {
      *   dealt with!
      **/
     int bytes_read = 0;
+
+    do {
+        ret = read(fifo, value, sizeof(int));
+
+        if(ret==-1){
+            if(errno==EINTR) continue;;
+            handle_error("consumer: error on write()");
+        }
+        if(ret==0) handle_error("consumer: producer closed FIFO unexpectedly. Exiting...");
+        if (ret < sizeof(int)) handle_error_en(ret, "partial read from FIFO");
+        bytes_read += ret;
+    } while(bytes_read != sizeof(int));
 
     return bytes_read;
 }
