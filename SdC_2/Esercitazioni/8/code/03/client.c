@@ -67,7 +67,7 @@ int main(int argc, char* argv[]) {
             if (errno == EINTR) continue;
             handle_error("Cannot write to socket");
         }
-
+        
         /* After a quit command we won't receive any more data from
          * the server, thus we must exit the main loop. */
         if (msg_len == quit_command_len && !memcmp(buf, quit_command, quit_command_len)) break;
