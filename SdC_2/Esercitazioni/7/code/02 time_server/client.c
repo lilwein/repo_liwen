@@ -42,6 +42,16 @@ int main(int argc, char* argv[]) {
      * - for now don't deal with messages partially sent
      */
 
+    int send_bytes = 0;
+    while ( send_bytes < command_len ){
+        ret = send(socket_desc, command, command_len, 0);
+        if(ret==-1){
+            if(errno==EINTR) continue;
+            handle_error("server: error on send");
+        }
+        send_bytes += ret; 
+    }
+
     if (DEBUG) fprintf(stderr, "Message of %d bytes sent\n", ret);
 
     // read message from the server
@@ -58,6 +68,18 @@ int main(int argc, char* argv[]) {
      *   recv() we will get stuck since the call is blocking!
      * - store the number of received bytes in recv_bytes
      */
+    
+    while (1) {
+        recv_bytes = recv(socket_desc, recv_buf, recv_buf_len - 1, 0);
+        if(ret==-1){
+            if(errno==EINTR) continue;
+            handle_error("client: error on receive");
+        }
+        if(ret==0){
+            handle_error("client: server closed connection");
+        }
+        break;
+    } 
     
     if (DEBUG) fprintf(stderr, "Message of %d bytes received\n", recv_bytes);
 

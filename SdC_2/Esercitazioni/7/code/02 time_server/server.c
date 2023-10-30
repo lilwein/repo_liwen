@@ -19,7 +19,7 @@ void connection_handler(int socket_desc) {
     // receive command from client
     char recv_buf[256];
     size_t recv_buf_len = sizeof(recv_buf);
-    int recv_bytes;
+    int recv_bytes = 0;
 
     /** INSERT CODE TO RECEIVE DATA HERE
      *
@@ -31,7 +31,20 @@ void connection_handler(int socket_desc) {
      * - store the number of received bytes in recv_bytes
      */
 
+    while ( recv_bytes < allowed_command_len ){
+        ret = recv(socket_desc, recv_buf + recv_bytes, allowed_command_len - recv_bytes, 0);
+        if(ret==-1){
+            if(errno==EINTR) continue;
+            handle_error("server: error on receive");
+        }
+        if(ret==0){
+            handle_error("server: client closed connection");
+        }
+        recv_bytes += ret;
+    }
+
     if (DEBUG) fprintf(stderr, "Message of %d bytes received\n", recv_bytes);
+    recv_buf[recv_bytes] = '\0';
 
     // parse command received and write reply in send_buf
     if (recv_bytes == allowed_command_len && !memcmp(recv_buf, allowed_command, allowed_command_len)) {
@@ -51,7 +64,17 @@ void connection_handler(int socket_desc) {
      * - send() with flags = 0 is equivalent to write() on a descriptor
      * - for now don't deal with messages partially sent
      */
-   
+    
+    int send_bytes = 0;
+    while ( send_bytes < server_message_len ){
+        ret = send(socket_desc, send_buf, server_message_len, 0);
+        if(ret==-1){
+            if(errno==EINTR) continue;
+            handle_error("server: error on send");
+        }
+        send_bytes += ret; 
+    }
+
     if (DEBUG) fprintf(stderr, "Message of %d bytes sent\n", ret);
 
     // close socket
