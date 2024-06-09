@@ -58,7 +58,9 @@ void mat_set(matrice_sparsa* mat, int i, int j, int x) {
 	elem* prev = 0;
 
 	while(aux){
+		// printf("row=%d\tcol=%d\ti=%d\tj=%d\n", aux->row, aux->col, i, j);
 		if(aux->row > i || (aux->row == i && aux->col > j ) ){
+			// printf("BBBBBB\n");
 			if(x==0) return;
 
 			elem* new_elem = (elem*) malloc(sizeof(elem));
@@ -67,12 +69,21 @@ void mat_set(matrice_sparsa* mat, int i, int j, int x) {
 			new_elem->value = x;
 
 			new_elem->next = aux;
-			prev->next = new_elem;
+			
+			// printf("CCCCCC\n");
+
+			if(!prev) mat->first = new_elem;
+			else prev->next = new_elem;
+
+			// printf("mat_first: row=%d\tcol=%d\n", mat->first->row, mat->first->col);
+			// printf("DDDDDD\n");
 			return;
 		}
 		else if(aux->row==i && aux->col==j) {
 			if(x==0) {
-				prev->next = aux->next;
+				// printf("EEEEEEE\n");
+				if(!prev) mat->first = aux->next;
+				else prev->next = aux->next;
 				free(aux);
 				return;
 			}
