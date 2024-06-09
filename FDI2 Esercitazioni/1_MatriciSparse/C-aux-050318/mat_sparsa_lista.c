@@ -6,7 +6,7 @@ typedef struct elem {
 	int row;
 	int col;
 	int value;
-	elem* next;
+	struct elem* next;
 } elem;
 
 struct matrice_sparsa {
