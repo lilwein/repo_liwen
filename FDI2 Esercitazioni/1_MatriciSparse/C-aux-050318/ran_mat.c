@@ -28,7 +28,7 @@ int main(int argc, char** argv){
 				r = rand() % 100;
 			else
 				r = 0;
-			fprintf(fp, "%d ", r);
+			fprintf(fp, "%d\t", r);
 			
 		}
 		fprintf(fp, "\n");
