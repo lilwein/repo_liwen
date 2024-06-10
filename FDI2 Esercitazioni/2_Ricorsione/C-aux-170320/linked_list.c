@@ -122,5 +122,14 @@ int linked_list_iterator_getvalue(linked_list_iterator *iter) {
 }
 
 void inverti_lista(linked_list * list) {
-	//TODO: Da completare
+	if (list->head != list->tail) {
+		linked_list_node *node = list->head;
+		list->head = node->next;
+		node->next = NULL;
+
+		inverti_lista(list);
+		
+        list->tail->next = node;
+		list->tail = list->tail->next;
+    }
 }
