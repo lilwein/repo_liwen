@@ -8,7 +8,7 @@
 #include "utils.h"
 
 array* createArray(int n) {
-    if((n < MIN_SIZE) || (n > MAX_SIZE)) {
+    if( /*(n < MIN_SIZE) || */ (n > MAX_SIZE)) {
         fprintf(stderr, "Dimensioni richieste fuori standard. Array non generato.\n");
         exit(1);
     }
@@ -177,9 +177,11 @@ int compare_ints(const void *p, const void *q) {
 int testSort(array *a, void (*sort_alg)(array*)) {
 /* clona a; ordina a con sort_alg (puntatore a funzione);
    ordina il clone con libreria; confronta risultati */
+    stampaArray(a);
     array *cl = clone(a);
 /*    (*sort_alg)(a);*/
     sortAlgCaller(sort_alg, a);
+    stampaArray(a);
 
     clock_t begin = clock();
     qsort(cl->arr, cl->size, sizeof(int), compare_ints); /* libreria */
