@@ -10,6 +10,7 @@ void print_help() {
 }
 
 int main(int argc, char** argv) {
+    system("clear");system("clear");
 
     if (argc != 2) {
         print_help();
@@ -20,6 +21,16 @@ int main(int argc, char** argv) {
         
         bst * b = bst_new(6, "Pisa");
 
+        printf("Valore associato a 6: %s\n", (char *) bst_find(b, 6));
+
+        bst_insert(b, 6, "Terni");
+        printf("Valore associato a 6: %s\n", (char *) bst_find(b, 6));
+
+        // printf("remove_min()\n");
+        // bst_remove_min(b);
+
+        bst_print(b);
+
         bst_insert(b, 3, "Roma");
         bst_insert(b, 12, "Milano");
         bst_insert(b, 7, "Bologna");
@@ -29,6 +40,15 @@ int main(int argc, char** argv) {
         bst_insert(b, 8, "Bari");
 
         bst_print(b);
+
+        printf("Chiave minima: %d\n", bst_find_min(b));
+
+        printf("remove_min()\n");
+        bst_remove_min(b);
+
+        bst_print(b);
+
+        printf("Chiave minima: %d\n", bst_find_min(b));
 
         printf("Valore associato a 5: %s\n", (char *) bst_find(b, 5));
 
@@ -70,6 +90,8 @@ int main(int argc, char** argv) {
 
         printf("remove(7)\n");
         bst_remove(b, 7);
+
+        bst_print(b);
 
         printf("Nodo associato a predecessor(8): ");
         printf("[chiave: %d, valore: %s]\n", bst_predecessor(b, 8), (char *) bst_find(b, bst_predecessor(b, 8)));

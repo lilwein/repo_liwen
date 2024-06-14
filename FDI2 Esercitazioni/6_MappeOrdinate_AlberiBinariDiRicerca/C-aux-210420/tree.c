@@ -117,15 +117,65 @@ void tree_delete(tree * tt) {
 	free(t);
 }
 
+// IS TREE?
+static int tree_is_bst_aux(tree * t, int last_max){
+	if(t==NULL) return last_max;
+
+	int max = tree_is_bst_aux(t->left, last_max);
+	if(max > t->key || max == -1 ) return -1;
+	
+	return tree_is_bst_aux(t->right, t->key);
+}
 
 int tree_is_bst(tree * tt) {
+	if(tree_is_bst_aux(tt, 0) == -1) return 0;
 	return 1;
+}
+
+
+// IS BALANCED? 
+static int tree_is_balanced_aux(tree * t) {
+	if(t==NULL) return 0;
+
+	int sx = tree_is_balanced_aux(t->left);
+	int dx = tree_is_balanced_aux(t->right);
+
+	if( (sx==-1 || dx==-1) || abs(sx-dx)>1) return -1;
+	if(sx+dx == 0) return 1;
+
+	int higher = (sx >= dx)? sx:dx;
+	return higher + 1 ;
 }
 
 int tree_is_balanced(tree * tt) {
+	if(tree_is_balanced_aux(tt)==-1) return 0;
 	return 1;
 }
 
+
+// IS AVL?
+static int tree_is_avl_aux(tree * t, int last_max, int* h){
+	if(t==NULL) {
+		*h = 0;
+		return last_max;
+	}
+	int left_height, right_height;
+	
+	int max = tree_is_avl_aux(t->left, last_max, &left_height);
+	if(max > t->key || max == -1 ) return -1;
+	
+	int right = tree_is_avl_aux(t->right, t->key, &right_height);
+
+	int height = (left_height >= right_height)? left_height:right_height;
+	*h = height + 1;
+
+	if(abs(left_height-right_height) > 1) return -1;
+
+	return right;
+}
+
 int tree_is_avl(tree * tt) {
+	int h;
+	if(tree_is_avl_aux(tt, 0, &h) == -1) return 0;
 	return 1;
 }
