@@ -1,0 +1,23 @@
+a) L'algoritmo c(int[], int[]) effettua una composizione di funzioni. Per determinare il suo costo asintotico, è
+   utile determinare il costo degli algoritmi coinvolti in tale composizione. Iniziamo con l'analisi dell'algoritmo
+   p(int a[], int b[]). In tale algoritmo se le dimensioni dei due array forniti in input sono differenti, allora
+   l'algoritmo termina restituendo null. Altrimenti, alloca una matrice di dimensione n*n, ove n = a.length, la 
+   popola con il prodotto degli elementi degli array a e b, e infine la restituisce. Perciò, indicando con 
+   n = a.length, visto che l'algoritmo effettua due cicli for annidati ciascuno di n iterazioni, il suo costo
+   risulta pari a Theta(n^2). L'algoritmo s(int a[][]) verifica se a è null, e in caso positivo termina restituendo
+   -1. Altrimenti, effettua la scansione della matrice a attraverso due cicli for annidati, memorizzando nella
+   variabile s la somma dei suoi elementi, e infine la restituisce. Il costo di tale algoritmo, visto che gli 
+   viene fornita in input una matrice quadrata di dimensione n*n, ove n = a.length, risulta pari a Theta(n^2). 
+   Tornando all'algoritmo c(int[], int[]) è utile determinare il coefficiente di dilatazione della funzione più
+   interna nella composizione (nel nostro caso p). Tale coefficiente per l'algoritmo p risulta pari a :
+										d = |output| / |input| = n^2 / n = n.
+   Il costo dell'algoritmo c(int[], int[]) assume la seguente forma :
+										T(n) = C_p(n) + C_s(d*n^2),
+   ove con C_p e C_s abbiamo indicato rispettivamente il costo dell'algoritmo p(int a[], int b[]) e dell'algoritmo
+   s(int a[][]). Sostituendo il valore di d nella precedente espressione si ottiene
+										T(n) = Theta(n^2) + Theta(n^3) = Theta(n^3).
+   Perciò, il costo asintotico dell'algoritmo c(int[], int[]) risulta pari a Theta(n^3).
+   
+b) L'algoritmo c(int[], int[]) non opera in place, perchè lo spazio di memoria che utilizza aumenta con l'aumentare
+   della dimensione dell'input. Infatti, nell'algoritmo p(int a[], int b[]) viene allocata una matrice la cui dimensione
+   dipende strettamente dalla dimensione degli array forniti in input.

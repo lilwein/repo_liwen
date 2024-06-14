@@ -1,0 +1,29 @@
+Prob4) 
+
+1) Il grafo illustrato dal problema è un grafo bipartito perchè si possono suddivider i nodi in due parti 
+nodi dedicati a rappresentare servizi/prototti (oggetti) e nodi dedicati a rappresentare utenti(soggetti). 
+Il grafo che può rappresentare i like è un grafo non diretto( perchè si dovrebbe poter vedere ogni utente 
+che like ha messo , e poi da ogni servizio/prodotto dobbiamo vedere che utenti sono stati messi (sul secondo 
+sono in dubbio) . Il grafo in oltre non è un grafo pesato e non è connesso , perchè ci possono essere dei servizi
+o dei utenti che o non hanno ricevuto like o non hanno messo like. Il grafo è semplice perchè un utente 
+non può mettere like a se stesso (quindi non c'è il cappio) e in oltre un utente non può mettere più di un 
+like a uno stesso servizio/prodotto.
+
+2) 
+
+contaAnaloghi(G,u):
+	l = u.getOpposite() // Lista dei like a servizi/ prodotti (sono i nodi opposti) 
+	V = G.getNodes() // insieme dei nodi
+	numUtentiSimili = 0		// contatore utente simili
+	for e in V && e != u:
+		if e.getStato() == Stato.UTENTE:
+			le = e.getOpposite()		//lista dei like di un altro utente
+			numSimili = 0				//contatore di like uguali
+			for ser-prod in l :
+				if ser-prod == l.removeFirs()
+						numSimili ++
+				 
+			if numSimili == l.size():   // controllo che l'insieme di e sia una superclasse di u
+				numUtentiSimili ++ 		// incremento di uno il numero di utenti simili
+	
+	return numUtentiSimili 

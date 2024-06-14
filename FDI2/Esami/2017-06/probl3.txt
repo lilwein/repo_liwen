@@ -1,0 +1,48 @@
+a) Una domanda che ci sorge spontanea è, data una sequenza S di n elementi confrontabili, se possiamo ordinare tale
+   sequenza in un tempo minore di O(n*log(n)). In effetti, se le primitive computazionali utilizzate dall'algoritmo
+   sono i confronti, questo è il meglio che possiamo fare. Per capire bene questo costo andremo a contare questi
+   confronti. Inoltre, rappresenteremo il nostro algoritmo di ordinamento basato su confronti attraverso un albero
+   di decisione T. I nodi interni rappresenteranno i possibili confronti, mentre i nodi esterni i possibili risultati.
+   L'albero T rappresenta l'insieme delle possibili serie di confronti che l'algoritmo di ordinamento potrebbe
+   effettuare. L'algoritmo inizierà dalla radice, effettuerà una possibile serie di permutazioni degli elementi di
+   S, e raggiungerà qualche nodo esterno. L'osservazione più importante sul lower bound del nostro algoritmo è la
+   seguente : ad ogni nodo esterno di T è associata esattamente una permutazione degli elementi di S. La giustificazione
+   di questa affermazione è molto semplice. Consideriamo due permutazioni P1 e P2, dove x_i viene prima di x_j in
+   P1 e x_i viene dopo di x_j in P2, che sono associate allo stesso nodo esterno. L'algoritmo una volta effettuata
+   una permutazione degli elementi di S dovrà effettuare un riordinamento di essi, ma poichè P1 e P2 sono associate
+   allo stesso nodo esterno, vuol dire che esiste un modo per ingannare l'algoritmo nel restituire in ordine errato
+   x_i e x_j. Questo non è possibile per un corretto algoritmo di ordinamento basato su confronti. Perciò faremo
+   la seguente affermazione : un algoritmo di ordinamento basato su confronti utilizzato per ordinare una sequenza
+   S di n elementi, ha un lower bound sul suo tempo di esecuzione pari a Omega(n*log(n)). Per dimostrare tale
+   proposizione basti pensare che il tempo di esecuzione del nostro algoritmo dovrà essere maggiore o uguale dell'altezza
+   dell'albero T associato ad esso. Inoltre, ogni nodo esterno di T deve essere distinto dagli altri e a ciascuno
+   di essi è associata esattamente una permutazione degli elementi di S. La permutazione di n elementi è pari a n!,
+   il quale implica un altezza di T pari almeno a log(n!). Visto che ci sono almeno n/2 elementi che sono maggiori
+   di n/2 nel prodotto n!, otteniamo il seguente risultato :
+										log(n!) >= log(n/2)^(n/2) = (n/2)*log(n/2),
+   il quale porta a Omega(n*log(n)).
+   
+   
+b) Un algoritmo di ordinamento che ha un costo Theta(n) in caso di input già ordinato è l'insertionSort. Di seguito
+   si riporta lo pseudocodice :
+   
+   Algorithm insertionSort(S) :
+   
+     for i <- 1 to S.length do :
+       j <- i - 1
+       elem <- S[i]
+       
+       while A[j] > elem && j >= 0 do :
+         A[j + 1] <- A[j]
+         j <- j - 1
+       A[j + 1] <- elem
+       
+     return S
+     
+   Possiamo notare che se la sequenza S è già ordinata il ciclo while non effettua alcuna iterazione, da questo
+   ne segue che l'algoritmo effettua solamente un ciclo for di n = S.length iterazioni, pagando un costo pari a 
+   Theta(n).
+   
+c) Il miglior upper bound temporale teoricamente possibile per un eventuale algoritmo di ordinamento che avesse
+   bisogno di impiegare uno spazio di memoria ausiliario pari a Theta(n^2) è O(n^2), poichè su macchine deterministiche
+   il tempo di esecuzione deve essere maggiore o uguale dello spazio ausiliario impiegato.

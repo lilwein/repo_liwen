@@ -1,0 +1,21 @@
+a) L'algoritmo process(String s) chiama l'algoritmo process(String prefix, String s). Analizzando quest'ultimo,
+   possiamo notare che se s è una stringa vuota allora termina stampando il prefisso, altrimenti esegue un
+   ciclo for di s.length() iterazioni, dove in ognuna effettua una chiamata a se stesso. Perciò, indicando con 
+   n = s.length() la dimensione della stringa s, per tale algoritmo possiamo scrivere la seguente equazione 
+   di ricorrenza :
+							T(n) = T(n-1) + (n-1)*T(n-1) + c.
+   Iterando questo ragionamento si ha : 
+							T(n) = T(n-1) + (n-1)*T(n-1) + c = .... = T(n - k) + (n - k) * T(n-k) + kc.
+   Il caso base viene raggiunto per n - k = 0, cioè quando k = n. Sostituendo tale valore di k nella
+   precedente espressione otteniamo :
+							T(n) = T(0) + n * c = c' + n*c = Theta(n).
+   Visto che z = log_2 n + 1, il costo di tale algoritmo risulta pari a Theta(2^z).
+   
+b) Nel caso in cui il costo del metodo substring(x, y) sia proporzionale ad y-x, la precedente equazione
+   di ricorrenza può essere riscritta nel seguente modo : 
+							T(n) = (n-1) + T(n-1) + (n-1)*(T(n-1) + (n-1)) + c = .... = (n-k) + T(n-k) +
+							+ (n-k)*(T(n-k) + (n-k)) + kc.
+  Il caso base viene raggiunto per n - k = 0, cioè per k = n. In questo caso si ha
+							T(n) = T(0) + n*c = Theta(n) = Theta(2^z).
+  Perciò, rispetto al caso precedente il costo non varia.
+  

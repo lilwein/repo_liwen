@@ -1,0 +1,67 @@
+Prima di tutto elenchiamo le possibili implementazioni della mappa ordinata con i costi delle relative operazioni :
+  - array ordinato :
+    - inserimento : un inserimento in un array ordinato, nel caso peggiore, richiede l'intera scansione dell'array
+      per determinare la posizione corretta dove inserire l'elemento considerato. Perciò, se la mappa è inizialmente
+      vuota, una serie di radq(m) operazioni di inserimento richiede un tempo Theta(radq(m)*m).
+    - ricerca : la ricerca in un array ordinato può essere effettuata attraverso la ricerca binaria che richiede un
+      tempo Theta(log(n)), per determinare un elemento in un array di n elementi. Perciò, una serie di operazioni
+      di m^2 operazioni di get richiede un tempo Theta(m^2 * log(m)).
+    - rimozione : per l'operazione di rimozione, il discorso è analogo all'operazione di inserimento, poichè quando
+      un elemento viene rimosso bisogna, nel caso peggiore, shiftare gli n - 1 elementi dell'array per colmare il
+      "buco" lasciato dall'elemento precedentemente rimosso, su un array contenente n elementi. Nel nostro caso,
+      una serie di radq_4(m) operazioni di rimozione richiede un tempo Theta(radq_4(m)*m).
+    - range query : nel caso peggiore l'intervallo di range query comprende tutti gli elementi dell'array,
+      perciò bisogna scansionare l'intero array di n elementi. Quindi, una serie di log(m) operazioni di range
+      query richiede un tempo pari a Theta(log(m)*m).
+    Utilizzando questa implementazione il costo totale per la serie di operazioni considerata, sarà pari a :
+									T(m) = Theta(radq(m)*m) + Theta(m^2 * log(m)) + 
+											Theta(radq_4(m)*m) + Theta(log(m)*m).
+
+  - lista collegata disordinata : 
+    - inserimento : un inserimento in una lista collegata disordinata richiede un tempo costante, poichè basta
+      inserire l'elemento in coda alla lista. Perciò, una serie di radq(m) operazioni di inserimento richiederanno
+      un tempo Theta(radq(m)).
+    - ricerca : un operazione di ricerca in tale struttura richiede, nel caso peggiore, l'intero scansione della
+      lista. Perciò, il tempo richiesto per una serie di m^2 operazioni di ricerca è pari a Theta(m^3).
+    - rimozione : un operazione  di rimozione richiede, nel caso, peggiore la scansione dell'intera lista e la modifica
+      di un puntatore. Quindi, una serie di radq_4(m) operazioni di rimozione richiede un tempo Theta(radq_4(m)*m).
+    - range query : un operazione di range query potrebbe comprendere tutti gli elementi nella lista. Perciò, una
+      serie di log(m) operazioni di range query richiede un tempo Theta(log(m)*m).
+    Utilizzando questa implementzione il costo totale per la serie di operazioni considerata, sarà pari a :
+									T(m) = Theta(radq(m)) + Theta(m^3) + Theta(radq_4(m)*m) +
+											+ Theta(log(m)*m).
+  
+  - BST :
+    - inserimento : nel caso peggiore, l'inserimento in un albero binario di ricerca richiede l'intera visita 
+      dell'albero. Perciò, una serie di radq(m) operazioni di inserimento richiede un tempo Theta(radq(m)*m).
+    - ricerca : nel caso peggiore, la ricerca di un elemento in un bst richiede un tempo Theta(log(m)), poichè
+      basta confrontare la chiave desiderata con il nodo attualmente considerato e verificare se è maggiore, uguale
+      oppure minore. Di conseguenza, la ricerca proseguirà nel sottoalbero destro, terminerà con successo, proseguirà
+      nel sottoalbero sinistro, oppure fallirà (raggiungendo una foglia). Quindi, una serie di m^2 operazioni di
+      ricerca richiede un tempo Theta(m^2 * log(m)).
+    - rimozione : per l'operazione di rimozione il discorso è analogo all'operazioni di inserimento. Perciò, una
+      serie di radq_4(m) operazioni di questo tipo richiede un tempo Theta(radq_4(m)*m).
+    - range query : un operazione di range query potrebbe comprendere tutte gli elementi dell'albero. Perciò, anche
+      in questo caso vi è la necessità di visitare l'intero albero. Di conseguenza, una serie di log(m) operazioni di 
+      questo tipo richiede un tempo Theta(log(m)*m).
+    Utilizzando questa implementazione il costo totale per la serie di operazioni considerata, sarà pari a :
+									T(m) = Theta(radq(m)*m) + Theta(m^2 * log(m)) + Theta(radq_4(m)*m) +
+									      + Theta(log(m)*m).
+  
+  
+  - AVL :
+    - inserimento : nel caso peggiore, un operazione di inserimento in un albero avl richiede un tempo Theta(log(m)),
+      per un albero avl che memorizza m elementi. Perciò, una serie di radq(m) operazioni di inserimento richiede
+      un tempo Theta(radq(m)*log(m)).
+    - ricerca : la ricerca in un albero avl, viene eseguita allo stesso modo della ricerca in albero bst. Perciò,
+      una serie di m^2 operazioni di ricerca richiede un tempo Theta(m^2 * log(m)).
+    - rimozione : nel caso peggiore, un operazione di rimozione in un albero avl richiede un tempo Theta(log(m)),
+      per un albero avl che memorizza m elementi. Perciò, una serie di radq_4(m) operazioni di questo tipo richiede
+      un tempo Theta(radq_4(m) * log(m)).
+    - range query : per l'operazioni di range query il discorso è analogo alla stessa operazione eseguita su un 
+      bst. Perciò, una serie di log(m) operazioni di range query richiede un tempo Theta(log(m) * m).
+    Utilizzando questa implementazione il costo totale per la serie di operazioni considerata, sarà pari a :
+									T(m) = Theta(radq(m)*log(m)) + Theta(m^2 * log(m)) +
+									     + Theta(radq_4(m) * log(m)) + Theta(log(m) * m).
+Inoltre, è possibile notare, confrontando i costi della serie di operazioni considerata delle diverse implementazioni,
+che l'implementazione della mappa ordinata attraverso un albero avl è la più efficiente fra le possibili.

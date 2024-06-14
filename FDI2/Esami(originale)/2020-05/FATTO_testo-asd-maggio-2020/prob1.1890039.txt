@@ -1,0 +1,9 @@
+Prob1) 
+
+1)
+Il costo di questo algortimo è lineare O(n).
+
+
+2) 
+Il costo spaziale dipende da ogni singolo record. Oltre all'input non viene inserito altro spazio di
+memoria nelle singole funzioni , quindi il costo rispetto lo spazioe è O(n).

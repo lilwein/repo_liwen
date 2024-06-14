@@ -1,0 +1,110 @@
+a) Un insieme è una collezione di elementi distinti, in cui non troviamo una nozione esplicita di chiave e
+   di ordinamento. Il TDA insieme supporta i seguenti metodi :
+   - makeSet(elem) : costruisce un insieme contenente il solo elemento elem, e lo restituisce.
+   - union(A, B) : restituisce A U B, distruggendo i vecchi insiemi A e B.
+   - intersection(A, B) : restituisce A /\ B, distruggendo i vecchi insiemi A e B.
+   
+   Di seguito si riporta lo pseudocodice di tali metodi con i relativi costi :
+   
+   Algorithm makeSet(elem) :
+     s <- new set
+     s->element <- elem
+     
+     return s
+     
+   Il costo dell'algoritmo makeSet(elem) è O(1).
+     
+     
+   Algorithm union(A, B) :
+     C <- empty set
+     
+     while(!A.isEmpty() && !B.isEmpty()) do :
+       a <- A.first()
+       b <- B.first()
+       
+       if(a < b) then :
+         C.insert(a)
+         A.remove(a)
+       else if(a > b) then :
+         C.insert(b)
+         B.remove(b)
+       else :
+         C.insert(a)
+         A.remove(a)
+         B.remove(b)
+     
+     while(!A.isEmpty()) do :
+       C.insert(A.first())
+       A.remove(A.first())
+     
+     while(!B.isEmpty()) do :
+       C.insert(B.first())
+       B.remove(B.first())
+     
+     return C
+     
+   Indicando con n_a e n_b il numero degli elementi contenuti rispettivamente nell'insieme A e nell'insieme
+   B, il costo di tale algoritmo è dato dal numero totale di iterazioni che il ciclo while esegue. Visto che
+   tale numero è pari a n_a + n_b, il suo costo sarà pari a O(n_a + n_b).
+   
+   
+   Algorithm intersection(A, B) :  
+     C <- empty set
+     
+     while(!A.isEmpty() && !B.isEmpty()) do :
+       a <- A.first()
+       b <- B.first()
+       
+       if(a < b) then :
+         A.remove(a)
+       else if(a > b) then :
+         B.remove(b)
+       else :
+         C.insert(a)
+         A.remove(a)
+         B.remove(b)
+     return C
+     
+   Indicando con n_a e n_b il numero degli elementi contenuti rispettivamente nell'insieme A e nell'insieme
+   B, il costo totale di tale algoritmo dipende dal numero massimo di iterazioni che il ciclo while esegue.
+   Il ciclo while termina quando uno dei due insiemi è vuoto, perciò il suo numero massimo di iterazioni sarà
+   pari al minimo fra n_a ed n_b. Perciò, il costo di tale algoritmo sarà pari a O(min(n_a, n_b)).
+   
+   
+b) Una partizione è una collezione di elementi disgiunti. Il TDA partizione supporta i seguenti metodi :
+     - makeSet(x) : costruisce un insieme contenente il solo elemento x e restituisce la posizione in cui x 
+       viene memorizzato.
+     - find(e) : restituisce l'insieme che memorizza l'elemento considerato in posizione e.
+     - union(A, B) : restituisce A U B, distruggendo i vecchi insiemi A e B.
+     
+     
+     Di seguito si riporta lo pseudocodice di tali metodi con i relativi costi :
+       
+     Algorithm makeSet(x) :
+       p[x] <- x
+       rank[x] <- 0
+
+     Il costo dell'algoritmo makeSet, come si può vedere, è pari a Theta(1).
+     
+     Algorithm find(e) :
+       if(p[e] != x) then :
+         p[e] <- find(p[e])
+       return p[e]
+       
+     Il costo di tale algoritmo è pari a Theta(1), poichè basta seguire il riferimento alla variabile set
+     memorizzata in ogni nodo che rappresenta ciascuna posizione di un dato insieme.
+
+    Algorithm union(A, B) :
+      return link(find(A), find(B))
+      
+    Algorithm link(A, B) :
+      if(rank[A] < rank[B]) then :
+        rank[A] <- B
+      else if(rank[A] > rank[B]) then :
+        rank[B] <- A
+      else
+        rank[B] <- rank[B] + 1
+        
+   Il costo dell'algoritmo link(A, B) è O(1) perchè è necessario far puntare il riferimento della radice
+   relativo all'insieme più piccolo al riferimento della radice dell'insieme più grande. Questo implica un
+   costo O(1) per l'algoritmo union(A, B).

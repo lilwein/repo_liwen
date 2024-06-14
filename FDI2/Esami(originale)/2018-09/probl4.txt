@@ -1,0 +1,71 @@
+
+Algorithm BST_inOrderVisit(b, list) :
+	if(b == NULL) then :
+		return
+	
+	BST_inOrderVisit(b->left, list)
+	list.insertTail(b->key)
+	BST_inOrderVisit(b->right, list)
+
+
+Algorithm BST_intersect(b1, b2) :
+	Input : Due dizionari gestiti attraverso due bst b1 e b2.
+	Output : lista contenente le chiavi presenti in entrambi i dizionari, ordinate e senza ripetizioni.
+	
+	if(b1 == NULL || b2 == NULL) then :
+		return NULL
+
+	l1 <- empty list
+	l2 <- empty list
+	result <- empty list
+	
+	BST_inOrderVisit(b1, l1)
+	BST_inOrderVisit(b2, l2)
+	
+	pred <- Integer.MIN_VALUE
+	while(!l1.isEmpty() && !l2.isEmpty()) do : 
+		elem1 <- l1.first()
+		elem2 <- l2.first()
+		
+		if(elem1 < elem2) then : 
+			result.insertTail(elem1)
+			l1.remove(l1.first())
+		else if(elem1 > elem2) then : 
+			result.insertTail(elem2)
+			l2.remove(l2.first())
+		else
+			if(pred != elem1) then :
+				result.insertTail(elem1)
+				pred <- elem1
+			l1.remove(l1.first())
+			l2.remove(l2.first())
+	return result
+
+
+
+	pred = Integer.MIN_VALUE;
+	while(!l1.isEmpty() && !l2.isEmpty()){
+		elem1 = l1.first();
+		elem2 = l2.first();
+		
+		if( elem1 == elem2 && elem1 != pred ){
+			result.insertTail(elem1)
+			pred = elem1;
+			l1.remove(elem1);
+			l2.remove(elem2);
+		}
+		
+		else if(elem1 < elem2){
+			l1.remove(elem1);
+		}
+
+		else if(elem1 > elem2){
+			l2.remove(elem2);
+		}
+	}
+
+
+						
+	
+Il costo dell'algoritmo BST_intersect(BST* b1, BST* b2) è pari a Theta(n1 + n2), ove n1 e n2 sono il numero
+di chiavi rispettivamente contenute nel primo e nel secondo bst.

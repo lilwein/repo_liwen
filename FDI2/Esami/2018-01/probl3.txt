@@ -1,0 +1,14 @@
+Un struttura dati efficiente per il caso considerato è un dizionario ordinato, in cui è presente una relazione
+d'ordine totale fra le chiavi delle entries, e vengono forniti dei metodi che utilizzano questo ordinamento. Alcune 
+operazioni che tale struttura dati supporta sono le seguenti :
+  - insert(D, (k,v)) : inserisce una nuova entry (k,v) nel dizionario D incrementando il numero di entries memorizzate
+    in esso di 1. Supponendo che il dizionario contenga n entries, nel caso peggiore, bisogna scansionare 
+    l'intero dizionario per trovare la posizione corretta in cui inserire l'entry considerata. 
+    Perciò, tale metodo ha un costo pari a O(n).
+  - get(D, k) : se il dizionario D contiene meno di k entries restituisce -1, altrimenti nel caso peggiore occorre
+    scansionare l'intero dizionario. Perciò, anche tale metodo ha un costo pari a O(n).
+  - remove(D, k) : Se esiste il k-esimo valore in ordine di grandezza, viene rimosso da D ed il numero di entries
+    memorizzate in D viene diminuito di 1. Valgono delle considerazioni analoghe ai casi precedenti, perciò il suo
+    costo è pari a O(n).
+  - mean(D, k) : questa operazione restituisce la media dei valori presenti in D. Quindi, occorre necessariamente
+    scansionare l'intero dizionario, il quale implica un costo pari a O(n).

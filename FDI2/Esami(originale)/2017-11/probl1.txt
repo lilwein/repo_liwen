@@ -1,0 +1,21 @@
+a) L'algoritmo modIncr(int[] arr) chiama l'algoritmo modIncr(int[] arr, int i). Analizzando quest'ultimo algoritmo
+   possiamo notare che, se i < 0 allora termina restituendo l'array arr, se arr[i] == 0, pone arr[i] = 1 e termina
+   restituendo l'array arr. Altrimenti, pone arr[i] = 0 e chiama se stesso decrementando di 1 la variabile i. Perciò,
+   per tale algoritmo, indicando con n = |arr| = arr.length - 1, possiamo scrivere la seguente equazione di ricorrenza :
+											T(n) = T(n - 1) + c.
+   Iterando questo ragionamento, si ottiene :
+											T(n) = T(n - 1) + c = ..... = T(n - k) + k*c.
+   Il caso base viene raggiunto quando n - k < 0, cioè quando k > n (k = n + 1) . Perciò, sostituendo la precedente espressione
+   assume la seguente forma :
+											T(n) = T(-1) + (n + 1) * c = c' + (n + 1)*c = Theta(n).
+   Perciò, il costo dell'algoritmo modIncr(int[], int) è pari a Theta(n). Segue che il costo dell'algoritmo
+   modIncr(int[]) sarà lo stesso.
+ 
+b) Consideriamo il caso in cui vengano effettuate 2^n, ove n = |arr| = arr.length,  invocazioni consecutive 
+   dell'algoritmo modIncr(int[]) su un array di zeri. Possiamo notare che la prima iterazione porrà 
+   arr[a.length - 1] = 1 e terminerà. La seconda iterazione porrà arr[a.length - 1] = 0 e arr[a.length - 2] = 1.
+   La terza porrà nuovamente arr[a.length - 1] = 1 e così via. Quindi, il caso peggiore che abbiamo determinato
+   al punto (a) si verificherà raramente, poichè l'algoritmo effettuerà delle chiamate ricorsive in maniera
+   incrementale, ad esempio nella 2° iterazione ne effettua una sola, nella 4° iterazione ne effettua 2, nella
+   7° iterazione ne effettua 3, nella 11° ne effettua 4, e così via. Perciò il costo dell'algoritmo modIncr(int [])
+   in questo caso risulta pari a Theta(2^n).

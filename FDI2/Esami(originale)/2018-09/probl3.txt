@@ -1,0 +1,22 @@
+a) L'upper bound di un problema A è O(f(n)) se esiste un algoritmo P che risolve A tale che il suo costo 
+   sia O(f(n)). Naturalmente fra gli upper bound noti prenderemo quello asintoticamente migliore, considerando
+   gli altri banali. Nel nostro caso gli upper bound noti sono due : O(n^2) e O(n^2 * log(n)). Perciò, il 
+   problema A a un upper bound pari a O(n^2).
+   
+   Il lower bound di un problema A è Omega(f(n)) se per ogni algoritmo P che risolve A tale che il suo costo
+   sia Omega(f(n)). In generale, visto che non conosciamo ogni singolo algoritmo che risolve un determinato
+   problema, viene proprio a mancare una procedura per costruire un lower bound di un dato problema. Perciò,
+   nel nostro caso, non possiamo dire nulla sul lower bound del problema A.
+   
+
+b) In quel caso diverrebbe preferibile l'algoritmo selectionSort. In particolare, il costo di tale algoritmo
+   dipende dal numero di confronti effettuati. Nel caso peggiore, risultano pari a Theta(n^2). Visto
+   che il costo dei confronti fra valori sarà nullo, allora il suo costo sarà determinato dal numero degli
+   scambi effettuati sull'array fornito in input. Visto che tali scambi sono Theta(n), allora nel 2050 il
+   selectionSort verrà eseguito in tempo lineare.
+
+
+c) Possiamo aiutare Alice nel seguente modo : possiamo costruire per i due grafi forniti in input le 
+   rispettive matrici di adiacenza, visto che i nodi sono identificati univocamente da un intero positivo 
+   (key). Dopodichè, basterà confrontare le due matrici; se sono uguali allora i grafi forniti in input sono 
+   lo stesso grafo, altrimenti sono differenti.

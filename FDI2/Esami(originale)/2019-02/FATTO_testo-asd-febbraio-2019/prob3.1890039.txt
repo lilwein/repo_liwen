@@ -1,0 +1,55 @@
+Problema 3
+
+a) 
+
+Farei un' algoritmo che calcola le seguenti funzioni :
+
+f(n) = 1 , n , n^2 , n^3 , n^3 , e^n ;
+
+Dove n è la dimensione dell' input e in base a questo confronterei i tempi dei due algoritmi:
+
+Per definizione O(g(x)) grande è data dall lim (n -> infinito) di f(n) / g(x) = cost; 
+
+Inizio a provare una ad una le funzioni , se al crescere di n la media dei rapporti cresce troppo passo alla successiva ;
+Cosi le provo fini a n^3 , se anche in quel caso continua a crescere molto  passo all' esponenziale , se invece in quel 
+caso la media dei rapporti inizia a tendere a zero al crescere di n possiamo dire che l'algoritmo è polinomiale 
+se invece la media dei rapporti rimane costante allora l'algoritmo è esponenziale .
+
+
+b)
+
+Per vedere se un grafo è aciclico basta eseguire un DFS e se troviamo un nodo in esplorazione allora 
+l'algoritmo è ciclico;
+
+boolean DFS-Controllo(G,v){
+		v.stato = EXPLORING;
+		ciclico = false
+		for u appartentente a v.outEdges() {
+			if(u = EXPLORING) ciclico = true; 
+		    if(U = UNXPLORED && DFS-Controllo(G,u)) ciclico = true;  
+		}
+		v.stato = EXPLORED;
+		return ciclico
+}
+
+
+DFS-ciclo(G){
+
+	for ogni v appartenent a V.getNodes() e con v UNEXPLORED:
+		if(DFS-Controllo(G,v)) return true;
+
+	return false;
+}
+
+c) Gli aberi binari attraverso Array si possono rappresentare sfruttanto queste considerazioni:
+	1. La radice corrisponde all'indice 0 ;
+	2. il figlio sinistro di un nodi i corrisponde all'indice 2*i + 1;
+	3. il figlio destro di un nodo i corrisponde all'indice 2*i + 2; 
+	
+	Il pregio di tale struttura è la velocità di accesso ai singoli elementi e risparmia la memoria occupata;
+	invece i difetti sono che nel caso peggiore l'array potrebbe terminare e dovrebbero essere copiati tutti
+	gli elementi e inseriti in un nuovo array più grande aumentato di costo in termini di tempo. Tale struttura
+	è molto comoda per quanto riguarda la rappresentazione di alberi binari completi ,poichè l'inserimento di un 
+	elemento corrisponde sempre a inserire un nuovo elemento alla fine. Un esempio molto pratico sono le Heap.
+	Dove per mantenere la struttura di albero completo basta solo inserire alla fine.
+	

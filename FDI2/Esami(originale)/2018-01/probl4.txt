@@ -1,0 +1,84 @@
+a) 
+
+   Algorithm isBipartite_aux(node, color) : 
+     node->tag <- DISCOVERY
+     node->color <- color
+     
+     ret <- 1
+     for e ∈ node.incidentEdges() do :
+       if(e->tag == UNEXPLORED) then :
+         w <- graph_get_edge_opposite(e, node)
+         e->tag = DISCOVERY
+         
+         if(w->tag == UNEXPLORED) then :
+           next_color <- (RED != color) ? RED : BLUE
+           ret <- isBipartite(w, next_color)
+           
+           if(!ret) then :
+             return 0
+           
+         else :
+           if(node->color == w->color) then :
+             return 0
+     return ret
+     
+   Algorithm isBipartite(G) :
+     Input : graph G
+     Output : 1 if G is bipartite, otherwise 0
+     
+     for v ∈ G.vertices() do :
+       v->tag <- UNEXPLORED
+       
+       for e ∈ v.incidentEdges() do :
+         e->tag <- UNEXPLORED
+     
+     ret <- 0  
+     for v ∈ G.vertices() do :
+       if(v->tag == UNEXPLORED) then :
+         ret <- isBipartite_aux(v, BLUE)
+ 
+         if(!ret) then :
+           return 0
+     return 1
+
+   Questo algoritmo utilizza la nota tecnica del graph coloring. Se trova due nodi adiacenti etichettati con lo
+   stesso colore, allora il grafo non è bipartito. Altrimenti, il grafo è bipartito. Inoltre, per esplorare il
+   grafo abbiamo utilizzato una visita in profondità. Perciò, il costo di tale algoritmo risulta pari a 
+   Theta(n + m), ove n ed m sono rispettivamente il numero dei nodi e degli archi del grafo.
+   
+b) 
+   Algorithm containCompleteSubgraph(G, k) :
+     Input : graph G, number of k vertices contained in the complete subgraph
+     Output : 1 if G contains at least one complete subgraph of k vertices, 0 otherwise.
+         
+     if(G.vertices().length() == 0) then :
+       return 0
+           
+     min <- Integer.MAX_VALUE
+     min_vertex <- NULL      
+     
+     for v ∈ G.vertices() do :
+       if v.incidentEdges().length() < min) then :
+         min <- v.incidentEdges().length()
+         min_vertex <- v
+       
+     if(min_vertex.incidentEdges().length() == k - 1) then :
+       return 1
+     
+     for e ∈ min_vertex.incidentEdges() do :
+       graph_remove_edge(G, e)
+     graph_remove_vertex(G, min_vertex)
+     
+     return containCompleteSubgraph(G, k)
+     
+   Tale algoritmo ad ogni iterazione determina il vertice w con il grado più basso nel grafo G. Se tale grado è 
+   uguale a k - 1, allora G contiene almeno un clique di dimensione k, altrimenti elimina tutti gli archi incidenti
+   in w e rimuove w stesso dal grafo. In seguito, si chiama ricorsivamente sul nuovo grafo e continua fino a quando
+   trova un clique di dimensione k oppure quando il grafo è vuoto (ricerca senza successo). Perciò, tale algoritmo,
+   nel caso peggiore ha un costo pari a Theta(|V|*(|V| + |E|)) ove |V| ed |E| rappresentano il numero dei vertici
+   e degli archi del grafo.
+         
+         
+
+
+

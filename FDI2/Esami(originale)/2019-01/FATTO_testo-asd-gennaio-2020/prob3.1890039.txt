@@ -1,0 +1,29 @@
+Prob3)
+
+Il numero di foglie è uguale n = 2^h , il numero foglie è dato dalla seguente relazione n = 2f -1 , 
+quindi f= (n+1)/2 , in paricolare il numero di confronti è uguale a 
+
+num_confronti = n - (n+1)/2 = 2^h - (2^h + 1)/ 2 // Perchè equivale al  numero di nodi interini , perche i 
+													i confronti vengono fatti ai livelli interni
+num_confronti = n - (n+1)/2 = 2^h - (2^h + 1)/ 2// I confronti rimangono come prima
+
+Si è possibile è possibile ma è molto difficile , poichè per mettere in ordine un insieme di f elementi 
+noi dobbiamo costruire un albero che ha num_confronti = n - (n+1)/2 = 2^h - (2^h + 1)/ 2, , una volta determinato 
+il massimo lo inseriamo in una nuova lista  e sostituisco nella lista iniziale il numero con zero o un valore
+che mi indica che è stato tolto , poi creo di nuovo l'albero su quel input modificato , e prendo di nuovo 
+il massimo e cosi via fino a quando tutti gli elementi del input saranno 0 e invece la nuova lista sarà 
+ordinata in ordine crescente. Il costo dell'algoritmo in funzione al numero di valori è 
+O(f^2) se f sono i valori dati in input(perchè abbiamo visto che nodi e foglie sono legati linearmente).
+
+
+
+3) No , non è possibile perchè non basta avere come ipotesi che il grafo sia connesso (se era fortemente 
+connesso con almeno tre nodi allora la condizione sarebbe stata sufficiente). In particolare basta prendere 
+il seguente grafo con i seguenti archi:
+
+(a,b)
+(c,b)
+(d,b) 
+
+che è un grafo connesso ma è acicilico e non è possibile vedere tale proprietà in tempo costante.
+

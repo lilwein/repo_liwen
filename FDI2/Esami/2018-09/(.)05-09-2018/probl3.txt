@@ -1,0 +1,121 @@
+
+a) Algorithm Horner(p, n, x) : 
+     Input : polinomio p di grado n, valore x
+     Output : valore del polinomio p calcolato in x
+     
+     res <- 0
+     for i <- n-1 to  0 do :
+       res <- res*x + p[i]
+     return res
+
+   L'algoritmo di Horner viene utilizzato per determinare il valore di un polinomio in un dato punto in tempo
+   lineare. Infatti, esso permette di ottenere il risultato di un polinomio dal precedente. Basta prendere
+   un polinomio p di grado n con coefficienti a_0, ..., a_n, i.e.
+						a_0*x^n + a_1*x^n-1 + ....... + a_n-1*x + a_n
+   e determinare il suo valore attraverso la seguente espressione : 
+						a_0*x(a_1*x(a_2*x(.......a_n-2*x(a_n-1*x + a_n)))).
+
+
+
+b) int* multipleSorting(int** arrays){
+	int i;
+	int size = sizeof(arrays) / sizeof(int);
+	int* indexes = (int*) malloc(sizeof(int)*size);
+	int cardinality = 0;
+	
+	for(i = 0; i < size: i++)
+		cardinality += getLength(arrays[i]);
+	
+	int* result = (int*) malloc(sizeof(int)*cardinality);
+	
+	//Setting up all start index for each array to 0
+	for(i = 0; i < size; i++)
+		indexes[i] = 0;
+	
+	i = 0;
+	int min = Integer.MAX_VALUE;	
+	int step = 0;
+	int min_index = 0;
+	
+	while(step < cardinality){	
+		i = 0;
+		for(i = 0; i < size; i++){
+			if(arrays[i][indexes[i]] < min){
+				min = arrays[i][indexes[i]];
+				min_index = i;
+			}
+		}
+		
+		result[step] = min;
+		(indexes[min])++;
+		step++;
+    }
+    return result;
+   }
+   
+
+Il costo del precedente algoritmo è dato dalla ripetuta selezione dell'elemento più piccolo fra gli n array
+forniti in input. In questo caso nell' array di ouput ammetto elementi duplicati, perciò il costo di tale 
+algoritmo sarà pari a Theta(n*{sum i = 0 to n length(array[i])}).
+
+c) 
+
+
+   Algorithm isRecursive(g, s) :
+     Input : grafo g che rappresenta il programma P
+     Output : 1 se il programma P è privo di qualsiasi tipo di ricorsione, 0 altrimenti.
+     
+     list <- empty list
+     l1 <- empty list
+     l2 <- empty list
+     
+     s->tag <- DISCOVERY
+     l1.enqueue(s)
+     list <- l1
+     
+     while(!l1.isEmpty()) do :
+       while(!list.isEmpty()) do :
+         v <- list.dequeue()
+         
+         for e ∈ v->out_edges do :
+           opposite <- edge_opposite(e, v)
+           if(opposite->tag == UNEXPLORED) then :
+             opposite->tag <- DISCOVERY
+             l2.enqueue(opposite)
+           else :
+             return 0
+             
+       l1 <- l2
+       list <- l1
+       l2 <- empty list
+     return 1
+
+
+	int DFS(g){
+		int ret = 0;
+		for(Node n : g.getNodes())
+			if(n.tag == UNEXPLORED)
+				ret += DFS_aux(g,f)
+     		return ret;
+	}
+
+	int DFS_aux(graph g, Node f){
+		f.tag = EXPLORING;
+		for(edge e: f.outEdge()){
+			opposite = e_opposite();
+			if(opposite == UNEXPLORED){
+				DFS(g, opposite)
+			}
+			else if(opposite== EXPLORING)
+				return 1;
+		}
+		f.tag = EXPLORED;
+		return 0;
+	}
+ 
+Il problema posto può essere risolto utilizzando una visita in ampiezza (BFS) diretta; Perciò, il costo
+di tale algoritmo è pari a Theta(n + m), ove n è il numero dei nodi ed m è il numero degli archi.
+
+
+
+

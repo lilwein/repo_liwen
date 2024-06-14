@@ -1,0 +1,53 @@
+a) Le tipologie di problemi di shotest-path che è possibile definire su G sono le seguenti :
+     - shortest path (SP) : dati due vertici s e v, determinare il percorso più breve fra di essi. Tale problema
+       più essere risolto con l'algoritmo di Dijkstra.
+     - single source shortest path (SSSP) : dato un vertice sorgente s, determinare il percorso più breve fra s
+       e i restanti vertici del grafo G. Anche questo problema può essere risolto con l'algoritmo di Dijkstra.
+     - all pairs shortest path (APSP) : per ogni vertice v del grafo G, determina il percorso più breve fra v e 
+       i restanti vertici del grafo. Tale problema può essere risolto utilizzando per ciascun vertice l'algoritmo
+       di Dijkstra oppure utilizzando l'algoritmo di Floyd-Warshall.
+       
+b) Algorithm BellmanFord(G, s) :
+
+     for v ∈ G.vertices do :
+       if(v != s) then :
+         dist[v] <- INF
+         pred[v] <- NULL
+       else :
+         dist[v] <- 0
+         pred[v] <- empty
+
+
+     for i <- 0 to G.vertices - 1 do :
+       for (u, v) ∈ G.edges do :
+         if(dist[u] + w(u, v) < dist[v]) then :
+           dist[v] <- dist[u] + w(u, v)
+           pred[v] <- u
+     
+     for (u, v) ∈ G.edges do :
+       if(dist[u] + w(u, v) < dist[v]) then :
+         error "Found negative weight cycle !"
+     
+     return dist[], pred[]
+       
+   Per risolvere il problema a singola sorgente del percorso minimo utilizzeremo un algoritmo più robusto di quello
+   di Dijkstra, chiamato algoritmo di BellmanFord. Tale algoritmo è più lento dell'algoritmo di Dijkstra per risolvere
+   lo stesso problema, ma è più versatile, poichè è in grado di gestire degli archi con dei pesi negativi. Se nel
+   grafo G è presente un ciclo il cui peso totale è negativo, allora non esiste uno shortest path, poichè ogni volta
+   che attraversiamo il ciclo lo shortest path diventa sempre più economico. In tal caso, questo algoritmo è in grado
+   di rilevare la presenza di questa tipologia di cicli. La sua procedura è basata sul rilassamento degli archi,
+   che viene ripetuta |V| - 1 volte, ove |V| è il numero dei vertici del grafo G. Ad ogni iterazione, la distanza 
+   di almeno un vertice viene approssimata fino a raggiungere la distanza reale. Al termine di questa procedura, 
+   tutti i vertici avranno la distanza corretta dal nodo sorgente s. Il suo tempo di esecuzione risulta pari a
+   Theta(|V|*|E|), ove |E| è il numero degli archi di G.     
+  
+c) L'albero dei cammini minimi qualora il grafo al punto (b) avesse il peso di tutti gli archi pari ad 1, può
+   essere determinato sfruttando una nota proprietà della visita in ampiezza di un grafo. Tale visita inizia
+   da un vertice s, è meno avventurosa della visita in profondità e suddivide i vertici in livelli. Il vertice s
+   si trova nel livello 0, e tale metodo andrà a visitare i vertici raggiungibili da s che si troveranno nel livello
+   1. In seguito, andrà a visitare i vertici raggiungibili da vertici raggiungibili da s, che si troveranno nel
+   livello 2, e così via. Perciò, se un generico vertice v si trova nel livello i, allora da distanza più breve
+   da s è proprio pari ad i. Un qualsiasi altro percorso che collega v ad s, avrà almeno i archi. In tal caso,
+   possiamo determinare l'albero dei cammini minimi radicati in A, in un tempo pari a Theta(n+m), ove n ed m
+   sono rispettivamente il numero dei vertici e degli archi del grafo.
+       

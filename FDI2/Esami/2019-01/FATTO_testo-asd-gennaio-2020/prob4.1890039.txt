@@ -1,0 +1,12 @@
+Prob4) 
+
+1)
+In questo albero esiste un unico albero minimo comprente poichè gli archi hanno tutti pesi diversi 
+quindi esiste una unica soluzione per costrurire il MST, ma in generale non vale questa regola poichè
+basta pensare a un grafo con tutti pesi uguali , attraverso un BFS attraversato da nodi diversi. 
+
+
+2)
+
+b(null,b) ,d(b,d) , a(d,a) , e ( d, e) c, (d,c) f (e,f)
+

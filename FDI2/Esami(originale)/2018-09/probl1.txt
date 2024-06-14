@@ -1,0 +1,14 @@
+a) L'algoritmo horner(double c[], double x) chiama l'algoritmo horner(double c[], int k, double x), 
+   perciò il suo costo dipenderà dal costo di quest'ultimo. Tale algoritmo memorizza c[k] nella variabile r
+   e se k >= c.length - 1 allora termina restituendo r. Altrimenti, effettua una chiamata ricorsiva incrementando
+   di uno il valore di k. Perciò, per tale algoritmo possiamo scrivere la seguente equazione di ricorrenza :
+				T(n) = T(n - 1) + c = ..... = T(n - alpha) + alpha*c,
+	ove abbiamo indicato con n = |c| la dimensione dell'array c fornito in input. Il caso base viene raggiunto
+	quando n - alpha = 1, cioè quando alpha = n - 1. In tal caso, si ottiene
+				T(n) = T(1) + (n - 1)*c = c' + (n - 1)*c = Theta(n).
+	Il costo di tale algoritmo risulta lineare in funzione della dimensione dell'input. Ne segue che, il costo
+	dell'algoritmo horner(double c[], double x) sarà pari a Theta(n).
+	
+b) Un metodo fa uso della ricorsione di coda quando utilizza la ricorsione lineare ed effettua come sua ultima
+   operazione una chiamata ricorsiva. L'algoritmo horner(double c[], double x) presenta una ricorsione di 
+   coda, perchè la sua ultima operazione è una chiamata ricorsiva.

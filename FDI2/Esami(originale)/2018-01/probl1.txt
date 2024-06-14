@@ -1,0 +1,23 @@
+a) L'algoritmo ordina(int[] a) chiama il metodo ordina(int[] a, int i). Analizzando quest'ultimo metodo, se 
+   i + 1 = a.length restituisce l'array a, altrimenti chiama il metodo infila(int i, int[] a) e se stesso.
+   L'algoritmo infila(int i, int [] a) pone x = a[i] e j = i + 1, e se j == a.length oppure x <= a[j] allora
+   termina restituendo a. Altrimenti, pone a[i] = a[j], a[j] = x e chiama ricorsivamente se stesso. Nel caso
+   peggiore, tale algoritmo chiama se stesso a.length - 1 volte. Perciò, indicando con n = a.length la dimensione
+   dell'array fornito in input, possiamo scrivere la seguente equazione di ricorrenza :
+									T(n) = T(n - 1) + c.
+   Iterando questo ragionamento si ottiene
+									T(n) = T(n - k) + kc.
+   Il caso base viene raggiunto per n - k = 0, cioè quando k = n. Quindi, sostituendo tale valore di k nella
+   precedente espressione si ha
+									T(n) = T(0) + n*c = c' + n*c = Theta(n).
+   L'algoritmo ordina(int[] a, int i) chiama se stesso al più n = a.length - 1 volte, per ogni chiamata a se stesso
+   l'algoritmo infila viene chiamato nel caso peggiore n-1, ....., 1 volte/a. Perciò, il costo di tale algoritmo
+   può essere espresso nel seguente modo :
+									T(n) = Theta(n-1 + n-2 + .... + 1) = Theta(n*(n+1)/2) = Theta(n^2).
+   La precedente espressione implica che il costo dell'algoritmo ordina(int[] a) risulta pari a Theta(n^2).
+   
+b) L'algoritmo ordina chiamando l'algoritmo infila, controlla se l'elemento in posizione i è minore o uguale
+   dell'elemento in posizione successiva, j = i + 1 oppure se l'indice j eccede la dimensione dell'array. Se queste
+   due condizioni non sono verificate, l'algoritmo scambierà A[i] con A[j] e richiamerà se stesso iniziando dall'indice
+   j fino a quando una delle precedenti condizioni non è verificata. Questo algoritmo segue la filosofia di un
+   noto algoritmo di ordinamento chiamato insertionSort.

@@ -1,0 +1,43 @@
+Prob1
+
+1.1)
+Per calcolare il costo dell' algortimo descrtto da questo codice faccio uso di alcuni concetti di probabilità,
+si può osservare che f è una funzione che ha due strade principali la prima se il numero in input e pari allora
+viene chiamato g( x/ 2) la seconda se è dispari viene chiamata se stessa con f(x - 1) . Sia x l'input allora
+
+Le probabilità di x sono:
+
+P( x = pari ) = 1/2
+P( x = dispari) = 1/2
+
+Invece g ha anche esso due strade e ricevece in input sempre un numero pari. la funzione g ha un if che controlla
+se x è un multiplo di 3 , in particolare abbiamo le seguenti probabilità
+
+P( x = pari AND x = multiplo di 3 ) = 1/6
+P( x = pari AND x = non multiplo di 3 ) = 2/6
+
+In paricolare se k sono le chiamate effettuate , 
+
+k/ 2 volte dividiamo per 2
+k/2 volte sottraiamo con 1
+
+k/6 volte dividiamo per 3 
+2k/6 volte sommiamo con 1
+
+
+Otteniamo la seguente formula
+
+(n - (k/2) + (2k/6)) / ((2^(k/2))(3^(k/6)) = n - (k/6)) / ((2^(k/2))(3^(k/6)) < n / (2^(k/2)) 
+
+Il caso base lo otteniamo quanto n/(2^(k/2)) = 1 quindi otteniamo 
+
+k/2 = log2(n) , nella dimensione dell input con z = |n| = log2(n) otteniamo O(z), qundi il costo è lineare.
+
+1.2)
+In questo caso il risultato non cambia , perchè la formula diventa
+
+(n + (k/2) + (2k/6)) / ((2^(k/2))(3^(k/6)) < 2n/(2^(k/2) = n /(2^(k/2 -1)
+
+Qunidi otteniamo sempre un k= log2(n) e in particolar nella dimensione dell'input otteniamo k= O(z) . IL costo
+rimane cmq lineare.
+

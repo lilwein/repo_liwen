@@ -1,0 +1,30 @@
+Prob 1)
+
+1) 
+Per cacolare il costo della funzione CeilIndex , possiamo osservare questo fatto:
+In input viene dato un Array e assumiamo che abbia dimensione n. Nel caso peggiore la situazione iniziale 
+è questa
+
+
+  | | | | | | | | |
+  l-->          <--r
+  
+Dove gli indici l e r inidicano respettivamente la fine e l'inizio. 
+
+A ogni iterazione del ciclo gli elementi si dimezzano qundi otteniamo che 
+
+n/(2^k) > 1 ==> 2^k < n ==> k < log2(n)  Qundi il costo di tale funzione è logaritmico. O(log2(n));
+
+
+Qundi il costo complessivo dell'algoritmo , ovvero il caso peggiore dell'algortimo è se 
+LongestIncreasingSubsequenceLength gli viene passato un array che prende sempre la terza strada di if
+(ovvero l'ultimo else) , e il costo dell'algortimo diventa 
+
+log(n) + log(n -1 ) + log( n -2 ) + ... log(1) = log(n!) < log(n^n) = n log(n)
+
+Qunidi il costo complessivo dell'algortimo è O(n log n). 
+
+2) 
+
+
+

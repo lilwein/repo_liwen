@@ -1,0 +1,39 @@
+#include <stdlib.h>
+#include <math.h>
+
+#include "graph_services.h"
+#include "graph.h"
+#include "linked_list.h"
+#include "partition.h"
+
+/*
+ * Date in input due citta' c1 e c2, ritorna la distanza euclidea tra c1 e c2
+ */
+double dist(city* c1, city* c2){
+	double dx = c1->x - c2->x;
+	double dy = c1->y - c2->y;
+	return sqrt((dx*dx) + (dy*dy));
+}
+
+/*
+ * Data una lista contenente un elenco di citta', ritorna un puntatore al grafo completo avente:
+ * - un nodo per ogni citta'
+ * - un arco per ogni coppia di citta' (x,y) avente come peso la distanza euclidea tra x ed y
+ */
+graph* get_complete_graph(linked_list* cities){
+	/*DA IMPLEMENTARE*/
+}
+
+/*
+ * Dato un grafo, ritorna un puntatore al minheap costituito dagli archi del grafo, usando il peso degli archi come priorita'.
+ */
+min_heap* get_min_heap_edges(graph* g){
+	/*DA IMPLEMENTARE*/
+}
+
+/*
+ * Dato un grafo, ritorna una lista degli archi che rappresentano un Minimum Spanning Tree del grafo.
+ */
+linked_list* get_mst(graph* g){
+	/*DA IMPLEMENTARE*/
+}

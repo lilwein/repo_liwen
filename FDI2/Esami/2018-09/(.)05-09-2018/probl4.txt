@@ -1,0 +1,33 @@
+
+enum operator {'+', '-', '*', '\'};
+
+double evaluateTree_aux(tree* t){
+  if(t == NULL)
+    return 0;
+    
+  printf("(");
+  double left = evaluateTree_aux(t->left);
+  printf("%c", operator[(int) t->info]);
+  double right = evaluateTree_aux(t->right);
+  printf(")");
+  
+  int ret = (int) t->info;
+  
+  if(operator[ret] == '+')
+	return left + right;
+  else if(operator[ret] == '-')
+	return left - right;
+  else if(operator[ret] == '*')
+	return left * right;
+  else if(operator[ret] == '\')
+	return left \ right;
+  else
+	return t->info;
+}
+
+
+double evaluateTree(tree* t){
+  if(tree == NULL)
+	return 0;
+  return evaluateTree_aux(t);
+}

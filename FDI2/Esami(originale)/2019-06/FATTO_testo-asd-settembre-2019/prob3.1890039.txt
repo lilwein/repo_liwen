@@ -1,0 +1,30 @@
+Prob3)
+
+1) Basta prendere le seguenti coppie con le chiavi e valori:
+
+(key = 4,val)
+(key = 15,val)
+(key = 26,val)
+(key = 37,val)
+
+L'aggregrazzione (o clustering ) è la formazione di inserimenti non omogenei dovuti a delle collisioni.
+Si formano quando abbiamo delle chiavi il cui risultato della funzione hash è lo stesso. In questo caso 
+bastava prendere dei valori il cui resto con 11 era sempre uguale. 
+4%11 == 15%11 == 26 % 11 == 37%11 
+
+2) Occore fare i seguenti passi
+
+	1) Creare un heapMin con il metodo botton up  (costo n) 
+	
+	2) Eseguire k volte le seguenti operazioni					(vengono ripetuti k volte)
+		a) Fare un removeMin per trovare l'i-essimo elemento  (costo cost)
+		b) Eseguire un down heap per ordinare la struttura dell'heap.  (costo logn)
+
+Quindi il costo complessivo è O(n + k logn);
+
+
+3) 
+
+Vistia pre ordine : 6 3 1 5 12 7 8 15 
+Visita pos ordine : 1 5 3 8 7 15 12 6
+Visita in ordine : 1 3 5 6 7 8 12 15

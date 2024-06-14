@@ -1,0 +1,15 @@
+all: driver.o bst.o bstnode.o
+	gcc -Wall -g -o driver bst.o driver.o bstnode.o -lm
+
+driver.o: driver.c
+	gcc -Wall -g -c driver.c
+
+bst.o: bst.h bst.c
+	gcc -Wall -g -c bst.c
+
+bstnode.o: bstnode.h bstnode.c
+	gcc -Wall -g -c bstnode.c 
+
+clean:
+	-rm ./*.o
+	-rm test

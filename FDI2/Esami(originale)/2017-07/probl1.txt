@@ -1,0 +1,37 @@
+a) L'algoritmo problema(int a[]) se a.length == 0 termina restituendo -1, altrimenti chiama il metodo
+   problema(int a[], int i, int j). Analizzando quest'ultimo, possiamo notare che :
+     - se i == j, termina restituendo a[i]
+     - se i + 1 == j, termina restituendo a[i] + a[j]
+     - altrimenti, utilizza la ricorsione multipla chiamando se stesso 3 volte.
+   Possiamo notare che queste tre chiamate ricorsive effettueranno approssimativamente lo stesso numero di chiamate
+   ricorsive a loro volta. Perciò, per tale algoritmo, indicando con n = a.length - 1 la dimensione dell'array fornito
+   in input, possiamo scrivere la seguente equazione di ricorrenza :
+								T(n) = 3*T(n/3) + c.
+   Iterando questo ragionamento si ottiene
+								T(n) = 3*T(n/3) + c = ....... = 3^k *T(n/3^k) + k*c.
+   Il caso base viene raggiunto per n/3^k = 1, cioè per k = log_3(n). Quindi, sostituendo tale valore di k nella
+   precedente espressione, si ha 
+								T(n) = n * T(1) + log_3(n)*c = n*c' + log_3(n)*c = Theta(n).
+   Il costo dell'algoritmo problema(int[], int, int) è quindi lineare. Di conseguenza anche il costo asintotico
+   dell'algoritmo problema(int[]) sarà lineare.
+   
+b) L'algoritmo problema(int[]) può essere riformulato in maniera non ricorsiva, poichè effettua semplicemente la
+   media degli elementi dell'array ottenuta ogni volta sommando le somme parziali degli elementi contenuti nei tre
+   cionconi dell'array e infine dividendo per il numero degli elementi dell'array. Una formulazione non ricorsiva
+   di questo algoritmo è la seguente :
+  
+    Algorithm array_sum(A) :
+      n <- A.length - 1
+      
+      sum <- 0
+      i <- 0
+      
+      while (i + 2 < n) do :
+	    sum <- sum + A[i] + A[i+1] + A[i+2] 
+	    i <- i + 3
+	    
+	  if(i < n) then :
+	    sum <- sum + A[i]  
+	    
+	  return sum / (double) A.length
+	  

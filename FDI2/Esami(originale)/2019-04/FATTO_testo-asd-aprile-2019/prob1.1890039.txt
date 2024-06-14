@@ -1,0 +1,22 @@
+Prob1)
+
+1)
+Possiamo calcolare il costo della funzione p attraverso un approssimazione tramite l'istruzione 
+dominante , in tale caso l'istruzione dominante è "if( v > a[i])" che viene eseguita nel peggiore
+dei casi esattamente z - 1 volte . con z la dimensione dell'array. Quindi il costo di tale funzione
+è O(z - 1) ovvero O(z) . 
+
+Detto ciò possiamo calcolare il costo della funzione s(int [] a, int i) , tale algoritmo viene 
+eseguito con una chiamata ricorsiva e ha la seguente equazione di ricorenza:
+
+S(z) = S(z-1) + z = S(z-2) + z + (z-1) = S(0)  + Sommatoria (z - i) =  C + z(z-1)/2 
+
+Qundi il costo dell'algoritmo è O(z^2). 
+
+Qundi anche il costo di s(int[] a) è O(z^2).
+
+2) 
+L'algorimo destrive in algortimo di ordinamento in particolare descrive un buble sort, questo 
+si può osservare dalla funzione p , che man mano scambia il valore a[i-1] = a[i] e anche dalla 
+funzione s che man mano si sposta verso sinista. 
+

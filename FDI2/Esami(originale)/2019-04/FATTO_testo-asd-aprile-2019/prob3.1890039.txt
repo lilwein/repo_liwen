@@ -1,0 +1,62 @@
+Prob3)
+1)
+Input: array
+Output: MaxHeap
+
+Algoritmo: 
+
+DownHeap(array,i):
+	while( (2*i + 1 < array.length && array[i]<array[2*i + 1]) || (2*i + 2 < array.length && array[i]<array[2*i + 2])):
+		if(2*i + 1 < array.length && array[i]<array[2*i + 1]):
+			array[i] = array[i] + array[2*i + 1]
+			array[2*i + 1] = array[i] - array[2*i + 1]
+			array[i] = array[i] - array[2*i + 1]
+			i = 2*i + 1
+		else if(2*i + 2 < array.length && array[i]<array[2*i + 2]):
+			array[i] = array[i] + array[2*i + 2]
+			array[2*i + 2] = array[i] - array[2*i + 2]
+			array[i] = array[i] - array[2*i + 2]
+			i = 2*i + 2
+			
+			
+CreaMaxHeap( array ) :
+	Crea array_new[array.length]
+	i = array.length - 1 
+	while( i >= 0):
+		array_new[i] = array[i]
+		DownHeap(array_new,i)
+		i = i -1
+	return array_new
+	
+	
+2) Possiamo sfruttare una visita BFS , che attraversa l'albero per livelli e vedere se a ogni 
+livello i nodi raddoppiano , se raddoppino allora l'albero è completo altrimenti no. 
+
+Input: albero t
+Output : boolean risp true se è completo false altrimenti.
+
+Algoritmo:
+	
+FALSE = -1; 	
+	
+Controllo(nodo):
+	if(nodo.estVuoto()):
+		return 0;
+	h_sx = Controllo(nodo.sinistro())
+	h_dx = Controllo(nodo.destro())
+	
+	if(h_sx != FALSE && h_dx != FALSE && h_sx >= h_dx ):
+		return h_sx
+	else 
+		return FALSE
+	
+Completo(t):
+	return Controllo(t.root()) != FALSE;
+
+ 
+3)
+
+Post order : E F I P C O  H  N G B J K L A M D
+In Order : E H F C P I  O D J G N B M A K L 
+Pre Order :  D H E O C F P I M J B G N A L K 
+

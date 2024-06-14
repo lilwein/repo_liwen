@@ -1,0 +1,64 @@
+a) 
+   Algorithm Dijkstra(G, source) :
+     Q <- empty priority queue
+     
+     for v ∈ G.vertices() do :
+       if(v != source) then :
+         v->distance <- INF
+         v->pred <- NULL
+       else :
+         v->distance <- 0
+         v->pred <- empty
+       
+       Q.insert(v->distance, v)
+       
+       total_distance <- 0
+       while(!Q.isEmpty()) do :
+         elem <- Q.removeMin()
+         
+         total_distance <- total_distance + elem->dist 
+         
+         for (elem, w) ∈ elem.incidentEdges() such that w is in Q do :
+           edge <- (elem, w)
+           
+           //Relax edge
+           if(edge->weight + elem->dist < w->dist) then :
+		     w->dist <- edge->weight + elem->dist
+		     w->pred <- elem
+	   
+	   return total_distance / (G.vertices() - 1)
+
+Tale algoritmo inserisce n vertici nella coda di priorità Q, il quale richiede un tempo O(n*log(n)) se Q è implementata
+mediante un heap. Un operazione di rimozione in un heap richiede un tempo O(log(n)) e la scansione di tutti gli 
+archi incidenti in un vertice v richiede un tempo O(deg(v)). Nel caso peggiore, verranno visitati tutti gli archi
+del grafo, perciò il tempo di esecuzione di tale algoritmo è pari a O((n + m)*log(m)).
+	   
+b) 
+   Algorithm getCriticalEdges(G, source) :
+     
+     avg_distance <- Dijkstra(G, source)
+     edges <- empty linked list
+     
+     for e ∈ G.edges() do :
+       edge_removed <- graph_remove_edge(G, e)
+       
+       curr_distance <- Dijkstra(G, source)
+       
+       graph_add_edge(G, edge_remove)
+       
+       if(curr_distance > avg_distance) then :
+         avg_distance <- curr_distance
+         list <- empty list
+         list.enqueue(edge_removed)
+         edges <- list
+       
+       else if(curr_distance == avg_distance) then :
+         edges.enqueue(edge_removed)
+     return edges
+     
+     
+   Il costo di tale algoritmo dipende dal costo dell'algoritmo progettato nel punto a). Quest'ultimo algoritmo
+   è proprio l'algoritmo di Dijkstra, perciò il suo tempo di esecuzione è pari a O((n+m)*log(n)). Tornando
+   all'algoritmo getCriticalEdges(Graph, Node), il suo costo è pari a O(m*((n+m)*log(n))).    
+       
+         

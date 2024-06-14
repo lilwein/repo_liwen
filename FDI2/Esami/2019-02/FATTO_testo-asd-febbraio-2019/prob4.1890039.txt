@@ -1,0 +1,29 @@
+Prob4)
+
+Risolviamo questo algortimo con un una visita BFS 
+
+ContaNodiK(t,k){
+	
+	stack = vuota;
+	
+	stack.add(t.getRadice());
+	
+	numNodi = 0;
+	
+	while(stack.size() != null){
+		nodoAttuale = stack.remove();
+		
+		n = 0;
+		nodoFiglio = nodoAttuale.firstChild;
+		while(nodoFiglio.nextSibling != null){
+			n += 1;
+			stack.add(nodoFiglio.nextSibling)
+			nodoFiglio = nodoFiglio.nextSibling		
+		}
+		if( n == k) numNodi += 1;
+	}
+	
+	return numNodi;
+	
+
+}

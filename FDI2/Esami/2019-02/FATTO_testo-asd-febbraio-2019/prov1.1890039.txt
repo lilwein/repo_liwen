@@ -1,0 +1,33 @@
+Prob1) 
+
+Abbiamo la funzione che è cosi fatta
+
+f(x) = { x se x <= 1 , f(f(x/2)) altrimenti 
+
+Se proviamo a fare ad esempio f(8) ci viene fuori il seguente albero
+
+
+
+
+						f(1)
+				f(2) 
+						f(1)
+		f(4)			
+						f(1)
+				f(2)
+f(8) 					f(1)
+				f(1)
+		f(3)	
+				f(1)
+				
+				
+Come sei può vedere viene un albero ha due chiamate ricorsive in oltre le chiamate ricevono circa il valore di input dimezzato. Qundi otteniamo 
+la seguente equazione di riccorenza
+
+T(n) = 2T(n/2) + C = xT(1) + log2(x)C			z = |x| = log2(x) => x = 2^z
+
+T(z) = 2^z ==> Costo esponenziale
+
+f2(x) = {x se x <= 0, f2(x-1)f1(x) altrimenti
+
+T(x) = T(x -1) + x + c = T(1) + x(x-1)/2 + (x-1)C ==> Costo esponenziale O(2^z) ;

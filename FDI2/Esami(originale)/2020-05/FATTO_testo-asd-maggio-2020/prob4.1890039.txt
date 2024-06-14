@@ -1,0 +1,41 @@
+Prob 4) 
+
+Il grafo che descrive tale problema è un grafo diretto (non pesato), dove ogni nodo indica l'attività
+da gestire , le frecce uscenti indicano le attività che devono seguire un certo nodo invece  entranti , 
+attività precedono il nodo. Se assumiamo che attività non possono essere seguite una dopo l'altra 
+il grafo non può avere cicli. In oltre non può avere cicli perchè se assumiamo che un'attività non può essere 
+seguita da un'altra , se ci fosse un ciclo allora questa attività grazie al ciclo puù essere seguita da quest
+altra attività.
+
+Qundi il grafo è semplice , diretto e aciclico e non pesato.
+
+2) 
+
+Per risolvere tale problema basta applicare un topological sort sul grafo
+
+Input : G grafo
+Output: Ordinamento lavori
+
+Algoritmo: 
+
+vincoli(G):
+	LavOrdinati = Coda vuota // Conterrà i lavori in ordine
+	S = Coda per i nodi che non hanno archi entratni
+	V = G.getNodes()
+	
+	for u in V && u.incidentEdges() == null:  // Metto in coda tutti i nodi che non hanno archi entranti
+		S.add(u);
+		
+	while !S.isEmpty():
+		S-i = Coda per visitare un grafo partendo dal nodi i-esimo
+		S-i.add(S.remove())
+		
+		while(!S-i.isEmpty()):
+			nodo = S-i.remove()
+			if (!LavOrdinati.contains(nodo)):
+				LavOrdintati.add(nodo);
+				listOutEdge = nodo.getOutEdge()
+				for e in listOutEdge :
+					S-i.add(e.getTarget())
+				
+	return LavOridinati

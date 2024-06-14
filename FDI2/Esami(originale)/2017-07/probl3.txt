@@ -1,0 +1,35 @@
+a) Un albero di Fibonacci di altezza h è un particolare albero bilanciato più vicino alla condizione di
+   sbilanciamento, che ha il minor numero possibile di nodi.
+
+b) Tali alberi prendono il nome dal famoso matematico Leonardo Fibonacci, infatti assumono delle proprietà della
+   famosa successione ed inoltre, essi sono intrinsecamente ricorsivi. Un albero di fibonacci di altezza h, può 
+   essere sempre ottenuto da un radice, da un sottoalbero sinistro di  altezza h - 1 e da un sottoalbero destro di
+   altezza h - 2.
+   
+c) Gli alberi di Fibonacci sono molto interessanti, poichè consentono di dimostrare che un albero avl contenente
+   n nodi ha un'altezza h = log(n). Per dimostrare tale affermazione, piuttosto che trovare un upper bound per
+   l'altezza di un albero avl che memorizza n nodi, lavoreremo sul problema inverso, cioè trovare un lower bound
+   per la sua altezza. Indicheremo con n(h) il minimo numero di nodi che memorizza un albero avl di altezza h.
+   Naturalemente n(1) = 1 e n(2) = 2, poichè un albero avl di altezza 1 ha esattamente un nodo ed un albero avl
+   di altezza 2 ne ha esattamente due. Adesso, proveremo ad estendere questo ragionamento per h >= 3. Considerando
+   anche la radice dell'albero, si ottiene :
+								n(h) = 1 + n(h - 1) + n(h - 2).
+   Tale espressione assomiglia molto alla successione di Fibonacci, perciò trascurando l'uno possiamo dedurre
+   che n(h) è una funzione crescente di h. Visto che n(h - 1) > n(h - 2) possiamo porre 
+								n(h) > 2*n(h - 2).
+   Iterando questo ragionamento si ottiene
+								n(h) > 2*n(h - 2)
+								n(h) > 4*n(h - 4)
+								     .
+								     .
+								     .
+								     .
+								n(h) > 2^i * n(h - 2*i).
+   Il caso base viene raggiunto per h - 2i = 1 oppure per h - 2i = 2 (noi sceglieremo il secondo). Perciò, quando
+   i = h/2 - 1. Inoltre, sostituendo tale valore di i nella precedente espressione, si ottiene :
+								n(h) > 2^(h/2 - 1) * n(h - h + 2) = 2^(h/2 - 1) * n(2) =
+								= 2^(h/2 -1)*2 = 2^(h/2).
+   Da cui si ricava 
+								h < 2*log(n(h)),
+   cioè
+								h = O(log(n)).

@@ -1,0 +1,83 @@
+a) Il problema in questione può essere rifomulato come un problema su grafi. Il grafo a cui si farà riferimento
+   sarà un grafo non orientato e pesato. I vertici rappresenteranno gli edifici (compreso il centro di
+   distribuzione), mentre gli archi i possibili collegamenti edificio-edificio oppure 
+   centro di distribuzione - edificio, ove il loro peso sarà pari alla distanza euclidea fra i due punti terminali.
+   Il problema assegnato può essere risolto sul grafo precedente, determinando un minimum spanning tree, cioè un
+   albero la cui somma dei pesi dei relativi archi è minima.
+   
+b)
+   Algorithm getMST(coordinates, x0, y0, n) :
+     Input : set of building coordinates, coordinates of distribution central, number of n coordinates
+     Output : MST of the graph built with input parameters provided
+     
+     G <- graph_new()
+     list <- empty list
+     
+     central <- new Vertex(x0, y0)
+     central->tag <- UNEXPLORED
+     G.addVertex(central)
+     list.insertTail(central)
+
+     for i <- 1 to n do :
+       building <- new Vertex(coordinates[i]->x, coordinates[i]->y)
+       building->tag <- UNEXPLORED
+       G.addVertex(building)
+       list.insertTail(building)
+       
+     //Make connection between each pair of vertices
+	 while(!list.isEmpty()) do :
+	   curr <- list.removeHead()
+	   
+	   it <- linked_list_iterator(list)
+	   elem <- it.getvalue()
+	   
+	   while(it.hasnext()) {
+	     dist <- distance(curr, elem)
+	     G.addEdges(curr, elem, dist)
+	     
+	     elem <- it.next()
+	   }
+     }
+     
+     //Sort edges based on their weights
+     heap <- empty min heap
+     partition <- empty partition
+     
+     for v ∈ G.vertices() do :
+       partition.makeSet(v, v->key)
+       v->tag <- EXPLORED
+       
+       for (v, u) ∈ v.incidentEdges() do :
+         if(u->tag == UNEXPLORED) then :
+           heap.insert(w(v, u), (v, u))
+     
+     //get MST with Kruskal's algorithm
+     storage <- empty list
+     
+     while(!heap.isEmpty()) do :
+       elem <- heap.removeMin()
+       edge <- elem->value
+       
+       id1 <- partition.find(edge->source->key)
+       id2 <- partition.find(edge->dest->key)
+       
+       if(id1 != id2) then :
+         storage.insertTail(edge)
+         partition.union(id1, id2)
+     
+     return storage
+
+
+c) Il grafo può essere rappresentato mediante la lista delle adiancenze, visto che in tal caso l'inserimento di
+   un vertice/arco richiede un tempo costante. Se indichiamo con n ed m il numero dei vertici e degli archi del 
+   grafo, il costo complessivo dell'inserimento di m archi nel grafo può essere rappresentato nel seguente modo :
+	
+							O((n-1) + (n-2) + (n-3) + ......... + 1) = O(n^2).
+   
+   Abbiamo utilizzato un min heap per ordinare gli archi in base ai loro pesi, quindi m inserimenti richiederanno
+   un tempo O(m*log(m)). Un'operazione di rimozione del minimo richiede un tempo O(log(m)), che nel caso peggiore
+   viene eseguita m volte, richiedendo un tempo O(m*log(m)). Ma poichè il grafo considerato non è orientato, 
+   allora 
+							m <= n(n - 1), 
+   richiedendo un costo pari a O(n^2 * log(n)). Perciò, il costo temporale complessivo dell'algoritmo presentato
+   in (b) è pari a O(n^2 * log(n)). Lo spazio ausiliario che invece utilizza è O(n + m).

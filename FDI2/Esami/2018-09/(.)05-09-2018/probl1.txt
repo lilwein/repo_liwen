@@ -1,0 +1,18 @@
+a) L'algoritmo bin(int n, int k) ha un costo costante se k = 0, oppure k = n, oppure k = 1, oppure k = n-1.
+   Se k > n-k, allora pone k a questa differenza. Infine, chiama l'algoritmo prod(int acc, int p, int q, int c).
+   Questo algoritmo effettua un calcolo memorizzando il suo risultato nella variabile r e se c = 1 allora
+   termina restituendo r. Altrimenti, chiama ricorsivamente se stesso. Il caso peggiore si verifica
+   quando c (nel nostro caso k), è molto maggiore di 1, cioè quando k = n-k. Prima di raggiungere il caso base
+   tale algoritmo chiama se stesso n-k-1 volte. Infatti, possiamo scrivere la seguente equazione di ricorrenza : 
+					T(x) = T(x-1) + c = ... = T(x - alpha) + alpha*c,
+	ove x = n - k. Il caso base si raggiunge quando x - alpha = 1, cioè quando alpha = x - 1. In tal modo
+	si ottiene
+					T(x) = T(1) + alpha*c = c' + (x-1)*c = Theta(x).
+	Inolte, visto che z = log_2 x, si ottiene
+					T(z) = Theta(2^z),
+	che rappresenta il costo dell'algoritmo bin(int n, int k) in funzione della dimensione dell'input.
+	
+	
+b)Un algoritmo è in-place se lo spazio di memoria utilizzato per memorizzare le variabili e le strutture dati 
+ausiliarie non aumenta con l'aumentare del valore o della dimensione dell'input. Se trascuriamo la memoria
+impiegata per gestire le ricorsioni runtime, allora l'algoritmo bin(int n, int k) è in-place.
