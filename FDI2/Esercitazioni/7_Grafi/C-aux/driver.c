@@ -144,7 +144,8 @@ int main(int argc, char** argv) {
 		graph_node * f = graph_add_node(graph, "f");
 		graph_node * g = graph_add_node(graph, "g");
 		graph_node * h = graph_add_node(graph, "h");
-		graph_node * i = graph_add_node(graph, "i");
+		// graph_node * i = 
+		graph_add_node(graph, "i");
 
 		graph_add_edge(graph, a, b);
 		graph_add_edge(graph, a, f);
@@ -171,7 +172,8 @@ int main(int argc, char** argv) {
 		graph_node * f = graph_add_node(graph, "f");
 		graph_node * g = graph_add_node(graph, "g");
 		graph_node * h = graph_add_node(graph, "h");
-		graph_node * i = graph_add_node(graph, "i");
+		// graph_node * i = 
+		graph_add_node(graph, "i");
 
 		graph_add_edge(graph, a, b);
 		graph_add_edge(graph, a, f);

@@ -22,5 +22,8 @@ void graph_print_adj(graph* g);
 int graph_n_con_comp(graph *);
 linked_list* graph_get_con_comp(graph*);
 
+// aux
+void print_list(linked_list* l);
+
 #endif	/* __GRAPH_H__ */
 

@@ -31,6 +31,11 @@ linked_list_iterator * linked_list_iterator_new(linked_list *ll);
 linked_list_iterator * linked_list_iterator_next(linked_list_iterator * iter);
 void * linked_list_iterator_getvalue(linked_list_iterator *iter);
 
+// aux
+void linked_list_remove(linked_list *ll, linked_list_node* node) ;
+linked_list_node * linked_list_get_node(linked_list * ll, void* value);
+
+
 #ifdef	__cplusplus
 }
 #endif

@@ -28,6 +28,18 @@ void * linked_list_get(linked_list * ll, int index) {
     return current->value;
 }
 
+linked_list_node * linked_list_get_node(linked_list * ll, void* value) {
+
+    linked_list * ptr = (linked_list *) ll;
+
+    linked_list_node* current = ptr->head;
+    while(current) {
+        if( *((char*)current->value) == *((char*)value) ) return current;
+        current = current->next;
+    }
+    return NULL;
+}
+
 void linked_list_add(linked_list * ll, void * value) {
 
     linked_list * ptr = (linked_list *) ll;
@@ -50,6 +62,34 @@ void linked_list_add(linked_list * ll, void * value) {
         ptr->head != NULL ? ptr->head->value : NULL, 
         ptr->tail != NULL ? ptr->tail->value : NULL);
     */
+}
+
+void linked_list_remove(linked_list *ll, linked_list_node* node) {
+
+    linked_list * ptr = (linked_list *) ll;
+
+    if (ptr->tail == NULL) return;
+
+    linked_list_node * current = ptr->head;
+    if( current == node ){
+        ptr->size --;
+        ptr->head = current->next;
+        if(current == ptr->tail) ptr->tail = NULL;
+        free(current);
+        return;
+    }
+
+    while(current->next) {
+        if( current->next != node ) current = current->next;
+        else{
+            linked_list_node* temp = current->next;
+            if(temp == ptr->tail) ptr->tail = current;
+            current->next = temp->next;
+            ptr->size --;
+            free(temp);
+            return;
+        }
+    }
 }
 
 void linked_list_remove_last(linked_list *ll) {
