@@ -2,6 +2,8 @@
 #include "stdlib.h"
 #include "stdio.h"
 
+#include "graph.h"
+
 struct linked_list_node {
 	void *value;
 	linked_list_node *next;
@@ -132,13 +134,16 @@ void linked_list_print(linked_list * ll){
 	linked_list_node *cur = ll->head;
 	printf("[ ");
 	while (cur) {
-		(cur->next) ? printf("%p, ", (cur->value)) : printf("%p", (cur->value));
+		printf("%s", (char*)((graph_node*)(cur->value))->value);
+		if(cur->next) printf(", ");
 		cur = cur->next;
 	}
 	printf(" ]\n");
-	printf("size: %d - head: %p - tail: %p\n", ll->size,
-		ll->head != NULL ? ll->head->value : NULL,
-		ll->tail != NULL ? ll->tail->value : NULL);
+	
+	// printf("size: %d - head: %p - tail: %p\n", ll->size,
+	// 	ll->head != NULL ? ll->head->value : NULL,
+	// 	ll->tail != NULL ? ll->tail->value : NULL);
+
 	/*if (ll->head != NULL && ll->head->next != NULL)
 		printf("nxtHead: %p \n", ll->head->next->value);
 	if (ll->tail != NULL && ll->tail->next != NULL)

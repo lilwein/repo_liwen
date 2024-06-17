@@ -199,6 +199,8 @@ int main(int argc, char** argv) {
 		graph_node * f = graph_add_node(graph, "f");
 		graph_node * g = graph_add_node(graph, "g");
 		graph_node * h = graph_add_node(graph, "h");
+		// graph_node * i = 
+		graph_add_node(graph, "i");
 
 		graph_add_edge(graph, a, b);
 		graph_add_edge(graph, a, f);
@@ -235,7 +237,7 @@ int main(int argc, char** argv) {
 		graph_add_edge(graph, b, c);
 		graph_add_edge(graph, b, f);
 		graph_add_edge(graph, c, d);
-		graph_add_edge(graph, d, b);
+		// graph_add_edge(graph, d, b);
 		graph_add_edge(graph, e, f);
 		graph_add_edge(graph, f, c);
 		graph_add_edge(graph, g, h);
@@ -244,13 +246,17 @@ int main(int argc, char** argv) {
 		graph_print(graph);
 		printf("\n");
 
-		printf("Primo tentativo: (dovrebbe fallire)\n");
-		topological_sort(graph);
+		// printf("Primo tentativo: (dovrebbe fallire)\n");
+		// topological_sort(graph);
 
-		printf("Rimozione arco (d,b)\n");
-		graph_remove_edge(graph, d, b);
+		// printf("Rimozione arco (d,b)\n");
+		// graph_remove_edge(graph, d, b);
 
-		printf("secondo tentativo: (dovrebbe riuscire)\n");
+		// printf("Grafo\n\n");
+		// graph_print(graph);
+		// printf("\n");
+
+		// printf("secondo tentativo: (dovrebbe riuscire)\n");
 		topological_sort(graph);
 
 		graph_delete(graph);
