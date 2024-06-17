@@ -222,10 +222,6 @@ graph* graph_read_ff(FILE* input) {
 	return ret;
 }
 
-void graph_print(graph* g) {
-
-}
-
 void graph_print_adj(graph* g) {
 	linked_list * nodes = graph_get_nodes(g);
 	linked_list_iterator * lli = linked_list_iterator_new(nodes);
@@ -274,11 +270,111 @@ void print_list(linked_list* l){
     printf("]\n");
 }
 
+static void DFS_print(graph_node* node){
+	node->state = EXPLORING;
+	linked_list* edges = node->out_edges;
+	linked_list_node* it_edge = edges->head;
+	while(it_edge){
+		graph_node* opposite = (graph_node*) it_edge->value;
+		if(opposite->state == UNEXPLORED){
+			printf("%s, %s\n", (char*)node->value, (char*)opposite->value);
+		}
+		it_edge = it_edge->next;
+	}
+	it_edge = edges->head;
+	while(it_edge){
+		graph_node* opposite = (graph_node*) it_edge->value;
+		if(opposite->state == UNEXPLORED){
+			DFS_print(opposite);
+		}
+		it_edge = it_edge->next;
+	}
+	node->state = EXPLORED;
+}
+
+void graph_print(graph* g) {
+	printf("Vertices: %d\tEdges: %d\n", g->n_vertices, g->n_edges);
+
+	linked_list* nodes = g->nodes;
+	linked_list_node* aux = nodes->head;
+	while(aux){
+		graph_node* node = (graph_node*) aux->value;
+		if(node->state == UNEXPLORED) DFS_print(node);
+		aux = aux->next;
+	}
+}
+
+static void DFS(graph_node* node){
+	node->state = EXPLORING;
+	linked_list* edges = node->out_edges;
+	linked_list_node* it_edge = edges->head;
+	while(it_edge){
+		graph_node* opposite = (graph_node*) it_edge->value;
+		if(opposite->state == UNEXPLORED){
+			DFS(opposite);
+		}
+		it_edge = it_edge->next;
+	}
+	node->state = EXPLORED;
+}
+
+// static void DFS_on_graph(graph* g){
+// 	linked_list* nodes = g->nodes;
+// 	linked_list_node* aux = nodes->head;
+// 	while(aux){
+// 		graph_node* node = (graph_node*) aux->value;
+// 		if(node->state == UNEXPLORED) DFS(node);
+// 		aux = aux->next;
+// 	}
+// }
+
+static void DFS_path(graph_node* node, linked_list* list){
+	linked_list_add(list, node);
+
+	node->state = EXPLORING;
+	linked_list* edges = node->out_edges;
+	linked_list_node* it_edge = edges->head;
+	while(it_edge){
+		graph_node* opposite = (graph_node*) it_edge->value;
+		if(opposite->state == UNEXPLORED){
+			DFS_path(opposite, list);
+		}
+		it_edge = it_edge->next;
+	}
+	node->state = EXPLORED;
+}
+
+
 int graph_n_con_comp(graph * g) {
-	return 0;
+	int ret = 0;
+
+	linked_list* nodes = g->nodes;
+	linked_list_node* aux = nodes->head;
+	while(aux){
+		graph_node* node = (graph_node*) aux->value;
+		if(node->state == UNEXPLORED) {
+			DFS(node);
+			ret++;
+		}
+		aux = aux->next;
+	}
+	return ret;
 }
 
 linked_list* graph_get_con_comp(graph* g) {
-	return NULL;
+	linked_list* ret = linked_list_new();
+
+	linked_list* nodes = g->nodes;
+	linked_list_node* aux = nodes->head;
+	while(aux){
+		graph_node* node = (graph_node*) aux->value;
+		if(node->state == UNEXPLORED) {
+			graph* to_add = graph_new();
+			DFS_path(node, to_add->nodes);
+			linked_list_add(ret, to_add);
+		}
+		aux = aux->next;
+	}
+	return ret;
 }
 

@@ -227,19 +227,6 @@ graph* graph_read_ff(FILE* input) {
 	return ret;
 }
 
-void graph_print(graph* g) {
-	printf("%d %d\n", g->properties->n_vertices, g->properties->n_edges);
-	linked_list_iterator* it = linked_list_iterator_new(g->nodes);
-	while (it) {
-		linked_list_iterator* itera = linked_list_iterator_next(it);
-		graph_node* current = (graph_node*)linked_list_iterator_getvalue(it);
-		if (current->state == UNEXPLORED) {
-			DFS_print_edges(current);
-		}
-		it = itera;
-	}
-}
-
 void graph_print_adj(graph* g) {
 	linked_list * nodes = graph_get_nodes(g);
 	linked_list_iterator * lli = linked_list_iterator_new(nodes);
@@ -265,6 +252,19 @@ void graph_print_adj(graph* g) {
 		printf("\n");
 
 		lli = linked_list_iterator_next(lli);
+	}
+}
+
+void graph_print(graph* g) {
+	printf("%d %d\n", g->properties->n_vertices, g->properties->n_edges);
+	linked_list_iterator* it = linked_list_iterator_new(g->nodes);
+	while (it) {
+		linked_list_iterator* itera = linked_list_iterator_next(it);
+		graph_node* current = (graph_node*)linked_list_iterator_getvalue(it);
+		if (current->state == UNEXPLORED) {
+			DFS_print_edges(current);
+		}
+		it = itera;
 	}
 }
 
