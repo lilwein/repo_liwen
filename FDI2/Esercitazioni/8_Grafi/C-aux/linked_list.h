@@ -42,37 +42,25 @@ void linked_list_delete(linked_list *ll);
 /**********************
   linked_list_iterator
 ***********************/
-/**
-Creates a new iterator over the list ll.
-*/
+
+// Creates a new iterator over the list ll.
 linked_list_iterator * linked_list_iterator_new(linked_list *ll);
 
-/**
-Returns 1 if iter has next, 0 otherwise.
-*/
+// Returns 1 if iter has next, 0 otherwise.
 int linked_list_iterator_hasnext(linked_list_iterator* iter);
 
-
-/**
-Moves the iterator one step further and returns the value pointed by the new node or NULL, if 
-the iterator reached the end of the list.
-*/
+// Moves the iterator one step further and returns the value pointed by the new node or NULL, if 
+// the iterator reached the end of the list.
 void * linked_list_iterator_next(linked_list_iterator * iter);
 
-/**
-Removes the node pointed by the iterator from the list.
-*/
+// Removes the node pointed by the iterator from the list.
 void linked_list_iterator_remove(linked_list_iterator * iter);
 
-/**
-Returns the value of the node pointed by the iterator.
-*/
+// Returns the value of the node pointed by the iterator.
 void * linked_list_iterator_getvalue(linked_list_iterator *iter);
 
-/**
-Deletes the iterator iter. Notice that one does not need to delete an iterator if it succesfully iterates through
-all the list.
-*/
+// Deletes the iterator iter. Notice that one does not need to delete an iterator if it succesfully iterates through
+// all the list.
 void linked_list_iterator_delete(linked_list_iterator* iter);
 
 #endif	/* __LINKED_LIST_H__ */
