@@ -73,7 +73,6 @@ void bfs(graph* g) {
 }
 
 void single_source_shortest_path(graph* g, graph_node* source) {
-
     min_heap* pq = min_heap_new();
 
     linked_list* g_nodes = g->nodes;
@@ -89,12 +88,9 @@ void single_source_shortest_path(graph* g, graph_node* source) {
 	source->dist = 0;
 
     printf("size: %d\n", min_heap_size(pq));
-    
     aux = linked_list_iterator_new(g_nodes);
-
     while(min_heap_size(pq)){
         min_heap_struct_entry* entry = min_heap_remove_min(pq);
-        // int distance = entry->key;
         graph_node* node = (graph_node*) entry->value;
 
         linked_list* edges = node->out_edges;
@@ -112,14 +108,12 @@ void single_source_shortest_path(graph* g, graph_node* source) {
             linked_list_iterator_next(it_edge);
         }
     }
-
     aux = linked_list_iterator_new(g_nodes);
     while(linked_list_iterator_hasnext(aux)){
         graph_node* node = (graph_node*) linked_list_iterator_getvalue(aux);
         printf("node: %s\t min_dist: %d\n", (char*)node->value, node->dist);
         linked_list_iterator_next(aux);
     }
-
 }
 
 void mst(graph* g) {
@@ -138,10 +132,8 @@ void mst(graph* g) {
         while(linked_list_iterator_hasnext(it_edges)){
             graph_edge* edge = (graph_edge*) linked_list_iterator_getvalue(it_edges);
             min_heap_insert(heap, edge->weight, edge);
-
             linked_list_iterator_next(it_edges);
         }
-        
         linked_list_iterator_next(aux);
     }
     
@@ -164,9 +156,6 @@ void mst(graph* g) {
     while(linked_list_iterator_hasnext(aux)){
         graph_edge* edge = (graph_edge*) linked_list_iterator_getvalue(aux);
         printf("(%s,%s)\n", (char*)edge->source->value, (char*)edge->target->value);
-
         linked_list_iterator_next(aux);
     }
-
-
 }
