@@ -169,7 +169,7 @@ void topological_sort(graph * g){
         node->status = EXPLORED;
         linked_list_iterator_next(aux);
     }
-    // linked_list_print(list);
+    
     printf("Numero di back edeges: %d\n", back_edges);
     if(back_edges) {
         printf("Il grafo ha cicli e quindi non è un DAG.\n");

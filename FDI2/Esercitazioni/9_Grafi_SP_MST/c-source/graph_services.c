@@ -31,20 +31,16 @@ void bfs(graph* g) {
     aux = linked_list_iterator_new(nodes);
     graph_node* source = (graph_node*) linked_list_iterator_getvalue(aux);
 
-
     linked_list* level = linked_list_new();
     linked_list_enqueue(level, source);
     linked_list_iterator* it_level = linked_list_iterator_new(level);
     
     int distance = 0;
-    // printf("%s\n", (char*)source->value);
-
     while(linked_list_iterator_hasnext(aux)){
         graph_node* n = (graph_node*) linked_list_iterator_getvalue(aux);
         
         if(n->status == UNEXPLORED){
             printf("%s\n", (char*)n->value);
-
             while(linked_list_iterator_hasnext(it_level)){ 
                 linked_list* next_level = linked_list_new();
 
@@ -62,14 +58,10 @@ void bfs(graph* g) {
                             printf("%s\n", (char*)opposite->value);
                         }
                         linked_list_iterator_next(it_edges);
-                    }
-                    
+                    }   
                     linked_list_iterator_next(it_level);
                 }
-                
-                // printf("list of level %d:\t", distance);
                 distance++;
-                // linked_list_print_graph_node(level);
 
                 level = next_level;
                 linked_list_iterator_delete(it_level);
