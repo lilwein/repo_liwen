@@ -93,6 +93,8 @@ int main(int argc, char** argv) {
 		graph_node *e = graph_add_node(gra, (void*)"e");
 		graph_node *f = graph_add_node(gra, (void*)"f");
 
+		// graph_node *h = graph_add_node(gra, (void*)"h");
+
 		graph_add_edge(gra, a, b, 2);
 		graph_add_edge(gra, a, c, 1);
 		graph_add_edge(gra, a, d, 5);
@@ -103,6 +105,8 @@ int main(int argc, char** argv) {
 		graph_add_edge(gra, e, d, 1);
 		graph_add_edge(gra, d, f, 5);
 		graph_add_edge(gra, e, f, 2);
+
+		// graph_add_edge(gra, h, a, 2);
 
 		printf("Grafo:\n\n");
 		graph_print(gra);
