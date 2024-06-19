@@ -318,15 +318,23 @@ static void DFS(graph_node* node){
 	node->state = EXPLORED;
 }
 
-// static void DFS_on_graph(graph* g){
-// 	linked_list* nodes = g->nodes;
-// 	linked_list_node* aux = nodes->head;
-// 	while(aux){
-// 		graph_node* node = (graph_node*) aux->value;
-// 		if(node->state == UNEXPLORED) DFS(node);
-// 		aux = aux->next;
-// 	}
-// }
+// Numero di componenti connesse
+int graph_n_con_comp(graph * g) {
+	int ret = 0;
+
+	linked_list* nodes = g->nodes;
+	linked_list_node* aux = nodes->head;
+	while(aux){
+		graph_node* node = (graph_node*) aux->value;
+		if(node->state == UNEXPLORED) {
+			DFS(node);
+			ret++;
+		}
+		aux = aux->next;
+	}
+	return ret;
+}
+
 
 static void DFS_path(graph_node* node, linked_list* list){
 	linked_list_add(list, node);
@@ -344,23 +352,7 @@ static void DFS_path(graph_node* node, linked_list* list){
 	node->state = EXPLORED;
 }
 
-
-int graph_n_con_comp(graph * g) {
-	int ret = 0;
-
-	linked_list* nodes = g->nodes;
-	linked_list_node* aux = nodes->head;
-	while(aux){
-		graph_node* node = (graph_node*) aux->value;
-		if(node->state == UNEXPLORED) {
-			DFS(node);
-			ret++;
-		}
-		aux = aux->next;
-	}
-	return ret;
-}
-
+// Componenti connesse
 linked_list* graph_get_con_comp(graph* g) {
 	linked_list* ret = linked_list_new();
 

@@ -63,79 +63,13 @@ void sweep(graph * g, char * format_string) {
     }
 }
 
-static int compare_node_val(graph_node* n1, graph_node* n2){
-    return (char*)n1->value == (char*)n2->value;
-}
+// static int compare_node_val(graph_node* n1, graph_node* n2){
+//     return (char*)n1->value == (char*)n2->value;
+// }
 
 
 
-static void graph_create_trasposed_DFS(graph* transposed, graph_node* n){
-    // graph_node* transp_n;
-    // linked_list_iterator* aux = linked_list_iterator_new(transposed->nodes);
-    // while(linked_list_iterator_hasnext(aux)){
-    //     transp_n = (graph_node*) linked_list_iterator_getvalue(aux);
-    //     if(compare_node_val(n, transp_n)){
-    //         break;
-    //     }
-    //     linked_list_iterator_next(aux);
-    // }
-    // // printf("%s trasposed: %s\n", (char*)n->value, (char*)transp_n->value);
-    
-    // linked_list* nodes = n->out_edges;
-    // printf("out edges of %s: ", (char*)n->value); linked_list_print(nodes);
-    // aux = linked_list_iterator_new(nodes);
-    // while(linked_list_iterator_hasnext(aux)){
-    //     graph_node* node = (graph_node*) linked_list_iterator_getvalue(aux);
-    //     if(node->status == UNEXPLORED) node->status = EXPLORING;
-
-    //     linked_list* t_nodes = transposed->nodes;
-    //     linked_list_iterator* t_iter = linked_list_iterator_new(t_nodes);
-    //     while(linked_list_iterator_hasnext(t_iter)){
-    //         graph_node* t_node = (graph_node*) linked_list_iterator_getvalue(t_iter);
-    //         if(compare_node_val(t_node, node)){
-    //             printf("Add edge from %s to %s\n", (char*)t_node->value, (char*)transp_n->value);
-    //             if(node->status == UNEXPLORED) graph_add_edge(transposed, t_node, transp_n);
-    //             // break;
-    //         }
-    //         linked_list_iterator_next(t_iter);
-    //     }
-    //     graph_create_trasposed_DFS(transposed, node);
-        
-    //     node->status = EXPLORED;
-    //     linked_list_iterator_next(aux);
-    // }
-
-}
-
-void strong_connected_components(graph  *g) {
-    // graph* transposed = graph_new();
-
-    // linked_list* nodes = g->nodes;
-    // linked_list_iterator* aux = linked_list_iterator_new(nodes);
-    // while(linked_list_iterator_hasnext(aux)){
-    //     graph_node* node = (graph_node*) linked_list_iterator_getvalue(aux);
-    //     node->status = UNEXPLORED;
-
-    //     graph_node* t_node = graph_add_node(transposed, node->value);
-    //     t_node->status = UNEXPLORED;
-
-    //     linked_list_iterator_next(aux);
-    // }
-
-    // aux = linked_list_iterator_new(nodes);
-    // while(linked_list_iterator_hasnext(aux)){
-    //     graph_node* node = (graph_node*) linked_list_iterator_getvalue(aux);
-    //     if(node->status == UNEXPLORED){
-    //         node->status = EXPLORING;
-    //         graph_create_trasposed_DFS(transposed, node);
-    //     }
-    //     linked_list_iterator_next(aux);
-    // }
-    // printf("Trasnposed: \n");
-    // graph_print(transposed);
-}
-
-static int topo_aux(graph_node* n, linked_list* list){
+static int DDFS(graph_node* n, linked_list* list){
     int ret = 0;
     linked_list* nodes = n->out_edges;
     linked_list_iterator* aux = linked_list_iterator_new(nodes);
@@ -143,7 +77,7 @@ static int topo_aux(graph_node* n, linked_list* list){
         graph_node* node = (graph_node*) linked_list_iterator_getvalue(aux);
         if(node->status == UNEXPLORED){
             node->status = EXPLORING;
-            ret += topo_aux(node, list);
+            ret += DDFS(node, list);
         }
         else if(node->status == EXPLORING) ret = 1;
         else if(node->status == EXPLORED);
@@ -155,6 +89,68 @@ static int topo_aux(graph_node* n, linked_list* list){
     // linked_list_print(list);
     return ret;
 }
+
+static void scc_aux(graph_node* n, linked_list* list){
+    if(n->status != UNEXPLORED) return;
+    n->status = EXPLORED;
+
+    linked_list* edges = n->in_edges;
+    linked_list_iterator* it_edge = linked_list_iterator_new(edges);
+    while(linked_list_iterator_hasnext(it_edge)){
+        graph_node* opposite = (graph_node*) linked_list_iterator_getvalue(it_edge);
+        scc_aux(opposite, list);
+
+        linked_list_iterator_next(it_edge);
+    }
+    n->status = EXPLORED;
+    linked_list_enqueue(list, n);
+}
+
+// Componenti fortemente connessi (grafi diretti)
+void strong_connected_components(graph  *g) {
+    linked_list* list = linked_list_new();
+
+    linked_list* nodes = g->nodes;
+    linked_list_iterator* aux = linked_list_iterator_new(nodes);
+    while(linked_list_iterator_hasnext(aux)){
+        graph_node* node = (graph_node*) linked_list_iterator_getvalue(aux);
+        if(node->status == UNEXPLORED){
+            node->status = EXPLORING;
+            DDFS(node,list);
+        }
+
+        node->status = EXPLORED;
+        linked_list_iterator_next(aux);
+    }
+
+    aux = linked_list_iterator_new(nodes);
+    while(linked_list_iterator_hasnext(aux)){
+        graph_node* node = (graph_node*) linked_list_iterator_getvalue(aux);
+        node->status = UNEXPLORED;
+        linked_list_iterator_next(aux);
+    }
+
+    aux = linked_list_iterator_new(list);
+    while(linked_list_iterator_hasnext(aux)){
+        graph_node* node = (graph_node*) linked_list_iterator_getvalue(aux);
+        if(node->status == UNEXPLORED){
+            linked_list* ret = linked_list_new();
+            scc_aux(node, ret);
+
+            printf("Sottografo fortemente connesso\n");
+            linked_list_iterator* it_ret = linked_list_iterator_new(ret);
+            while(linked_list_iterator_hasnext(it_ret)){
+                graph_node* opposite = (graph_node*) linked_list_iterator_getvalue(it_ret);
+                printf("%s\t", (char*)opposite->value);
+                linked_list_iterator_next(it_ret);
+            }
+
+            printf("\n");
+        }
+        linked_list_iterator_next(aux);
+    }
+}
+
 
 
 void topological_sort(graph * g){
@@ -168,7 +164,7 @@ void topological_sort(graph * g){
         graph_node* node = (graph_node*) linked_list_iterator_getvalue(aux);
         if(node->status == UNEXPLORED){
             node->status = EXPLORING;
-            back_edges += topo_aux(node, list);
+            back_edges += DDFS(node, list);
         }
         node->status = EXPLORED;
         linked_list_iterator_next(aux);
@@ -193,7 +189,7 @@ void topological_sort(graph * g){
         graph_node* node = (graph_node*) linked_list_iterator_getvalue(aux);
         if(node->status == UNEXPLORED){
             node->status = EXPLORING;
-            topo_aux(node, ret);
+            DDFS(node, ret);
         }
         node->status = EXPLORED;
         linked_list_iterator_next(aux);
