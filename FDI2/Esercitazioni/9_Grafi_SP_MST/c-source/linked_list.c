@@ -1,6 +1,7 @@
 #include "linked_list.h"
 #include "stdlib.h"
 #include "stdio.h"
+#include "graph.h"
 
 struct linked_list_node {
 	void *value;
@@ -130,6 +131,24 @@ void * linked_list_dequeue(linked_list * ll){
 
 int linked_list_size(linked_list *ll) {
 	return ll->size;
+}
+
+void linked_list_print_graph_node(linked_list * ll){
+	if(ll == NULL)
+		printf("NullPointerException in linked_list_print\n");
+	linked_list_node *cur = ll->head;
+	printf("[ ");
+	while (cur) {
+        printf("%s", (char*)((graph_node*)(cur->value))->value);
+		if (cur->next) printf(", ");
+		cur = cur->next;
+	}
+	printf(" ]\n");
+	// printf("size: %d\n", ll->size);
+	/*if (ll->head != NULL && ll->head->next != NULL)
+		printf("nxtHead: %p \n", ll->head->next->value);
+	if (ll->tail != NULL && ll->tail->next != NULL)
+		printf("nxtTail: %p \n", ll->tail->next->value);*/
 }
 
 void linked_list_print(linked_list * ll){

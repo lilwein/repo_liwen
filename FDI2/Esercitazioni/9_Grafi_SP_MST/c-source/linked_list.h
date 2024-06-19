@@ -97,4 +97,8 @@ all the list.
 */
 void linked_list_iterator_delete(linked_list_iterator* iter);
 
+
+// aux
+void linked_list_print_graph_node(linked_list * ll);
+
 #endif	/* __LINKED_LIST_H__ */
