@@ -117,7 +117,7 @@ void tree_delete(tree * tt) {
 	free(t);
 }
 
-// IS TREE?
+// IS BST?
 static int tree_is_bst_aux(tree * t, int last_max){
 	if(t==NULL) return last_max;
 
