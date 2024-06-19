@@ -81,7 +81,7 @@ void bfs(graph* g) {
 }
 
 void single_source_shortest_path(graph* g, graph_node* source) {
-    
+
     min_heap* pq = min_heap_new();
 
     linked_list* g_nodes = g->nodes;
@@ -131,5 +131,50 @@ void single_source_shortest_path(graph* g, graph_node* source) {
 }
 
 void mst(graph* g) {
-	
+    partition* partition = partition_new(g->properties->n_vertices);
+    min_heap* heap = min_heap_new();
+
+	linked_list* nodes = g->nodes;
+    linked_list_iterator* aux = linked_list_iterator_new(nodes);
+    for(int i=0; linked_list_iterator_hasnext(aux); i++){
+        graph_node* node = (graph_node*) linked_list_iterator_getvalue(aux);
+        node->map = i;
+        partition_makeset(partition,i);
+
+        linked_list* edges = node->out_edges;
+        linked_list_iterator* it_edges = linked_list_iterator_new(edges);
+        while(linked_list_iterator_hasnext(it_edges)){
+            graph_edge* edge = (graph_edge*) linked_list_iterator_getvalue(it_edges);
+            min_heap_insert(heap, edge->weight, edge);
+
+            linked_list_iterator_next(it_edges);
+        }
+        
+        linked_list_iterator_next(aux);
+    }
+    
+    linked_list* list = linked_list_new();
+    while(min_heap_size(heap)){
+        min_heap_struct_entry* entry = min_heap_remove_min(heap);
+        graph_edge* edge = (graph_edge*) entry->value;
+        graph_node* source = edge->source;
+        graph_node* target = edge->target;
+
+        int source_index = partition_find(partition, source->map);
+        int target_index = partition_find(partition, target->map);
+        if(source_index != target_index){
+            partition_union(partition, source_index, target_index);
+            linked_list_enqueue(list, edge);
+        }
+    }
+
+    aux = linked_list_iterator_new(list);
+    while(linked_list_iterator_hasnext(aux)){
+        graph_edge* edge = (graph_edge*) linked_list_iterator_getvalue(aux);
+        printf("(%s,%s)\n", (char*)edge->source->value, (char*)edge->target->value);
+
+        linked_list_iterator_next(aux);
+    }
+
+
 }
